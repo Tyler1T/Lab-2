@@ -28,9 +28,32 @@
 #include <string.h>
 #include "shell.h"
 
+/*
+    Rd - Destination Register
+    Rn - First Source Register
+    Src2 - Second Source Register
+    I - if I = 1 then Src2 is immediate, if I = 0 then Scr2 is a Register
+    S - if S = 1 then set condition flags otherwise don't
+
+    Each word consists of 32 bits here is what each bit does:
+    31:28 - Condition codes (4 bits)
+    27:26 - OPCODE (2 bits)
+    25:20 - function to be performed (6 bits)
+            function consists of the I bit, cmd, and the S bit
+              25 - I
+              24:21 - command
+              20 - S
+    19:16 - Rd (4 bits)
+    15:12 - Rn (4 bits)
+    11:0 - Src2 (12 bits)
+
+*/
+
 int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
 
   int cur = 0;
+
+  //If I = 0 then the processor has to go get Operand2 from memory
   if(I == 0) {
     int sh = (Operand2 & 0x00000060) >> 5;
     int shamt5 = (Operand2 & 0x00000F80) >> 7;
@@ -70,12 +93,21 @@ int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
 	  break;
       }
   }
+
+  /*
+    If I = 1 then the number being added is there in the command and there
+    is no reason to go to memory again
+  */
   if (I == 1) {
     int rotate = Operand2 >> 8;
     int Imm = Operand2 & 0x000000FF;
     cur = CURRENT_STATE.REGS[Rn] + (Imm>>2*rotate|(Imm<<(32-2*rotate)));
   }
   NEXT_STATE.REGS[Rd] = cur;
+
+  /*
+    If S = 1 then set the condition flags
+  */
   if (S == 1) {
     if (cur < 0)
       NEXT_STATE.CPSR |= N_N;
@@ -164,7 +196,6 @@ int SUB (int Rd, int Rn, int Operand2, int I, int S, int CC) {
       NEXT_STATE.CPSR |= Z_N;
   }
   return 0;
-
 }
 
 int TEQ (char* i_);
