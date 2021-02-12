@@ -73,38 +73,38 @@ int bchar_to_int(char* rsa) {
 int data_process(char* i_) {
 
   /*
-    This function further decode and execute subset of data processing 
+    This function further decode and execute subset of data processing
     instructions of ARM ISA.
 
     0000 = AND - Rd:= Op1 AND Op2
     0001 = EOR - Rd:= Op1 EOR Op2
-    0010 = SUB - Rd:= Op1 - Op2
-    0011 = RSB - Rd:= Op2 - Op1
-    0100 = ADD - Rd:= Op1 + Op2
+    0010 = SUB - Rd:= Op1 - Op2   DONE
+    0011 = RSB - Rd:= Op2 - Op1   DONE
+    0100 = ADD - Rd:= Op1 + Op2   DONE
     0101 = ADC - Rd:= Op1 + Op2 + C
     0110 = SBC - Rd:= Op1 - Op2 + C - 1
     0111 = RSC - Rd:= Op2 - Op1 + C - 1
-    1000 = TST - set condition codes on Op1 AND Op2 
-    1001 = TEQ - set condition codes on Op1 EOR Op2 
-    1010 = CMP - set condition codes on Op1 - Op2 
-    1011 = CMN - set condition codes on Op1 + Op2 
+    1000 = TST - set condition codes on Op1 AND Op2
+    1001 = TEQ - set condition codes on Op1 EOR Op2
+    1010 = CMP - set condition codes on Op1 - Op2
+    1011 = CMN - set condition codes on Op1 + Op2
     1100 = ORR - Rd:= Op1 OR Op2
     1101 = MOV - Rd:= Op2
-    1110 = BIC - Rd:= Op1 AND NOT Op2 
+    1110 = BIC - Rd:= Op1 AND NOT Op2
     1111 = MVN - Rd:= NOT Op2
   */
 
   char d_opcode[5];
-  d_opcode[0] = i_[7]; 
-  d_opcode[1] = i_[8]; 
-  d_opcode[2] = i_[9]; 
-  d_opcode[3] = i_[10]; 
+  d_opcode[0] = i_[7];
+  d_opcode[1] = i_[8];
+  d_opcode[2] = i_[9];
+  d_opcode[3] = i_[10];
   d_opcode[4] = '\0';
   char d_cond[5];
-  d_cond[0] = i_[0]; 
-  d_cond[1] = i_[1]; 
-  d_cond[2] = i_[2]; 
-  d_cond[3] = i_[3]; 
+  d_cond[0] = i_[0];
+  d_cond[1] = i_[1];
+  d_cond[2] = i_[2];
+  d_cond[3] = i_[3];
   d_cond[4] = '\0';
   char rn[5]; rn[4] = '\0';
   char rd[5]; rd[4] = '\0';
@@ -130,18 +130,38 @@ int data_process(char* i_) {
     printf("--- This is an ADD instruction. \n");
     ADD(Rd, Rn, Operand2, I, S, CC);
     return 0;
-  }	
+  }
 
-  /* Add other data instructions here */ 
+  /* Add other data instructions here */
 
-  return 1;	
+  //Subtraction command
+  if(!strcmp(d_opcode,"0010")) {
+    printf("--- This is an ADD instruction. \n");
+    SUB(Rd, Rn, Operand2, I, S, CC);
+    return 0;
+  }
+
+  //Reverse subtraction command
+  if(!strcmp(d_opcode,"0011")) {
+    printf("--- This is an ADD instruction. \n");
+    SUB(Rd, Operand2, Rn, I, S, CC);
+    return 0;
+  }
+
+  //Reverse subtraction command
+  if(!strcmp(d_opcode,"0011")) {
+    printf("--- This is an ADD instruction. \n");
+    SUB(Rd, Operand2, Rn, I, S, CC);
+    return 0;
+  }
+  return 1;
 }
 
 int branch_process(char* i_) {
-  
+
   /* This function execute branch instruction */
 
-  /* Add branch instructions here */ 
+  /* Add branch instructions here */
 
   return 1;
 
@@ -151,7 +171,7 @@ int mul_process(char* i_) {
 
   /* This function execute multiply instruction */
 
-  /* Add multiply instructions here */ 
+  /* Add multiply instructions here */
 
   return 1;
 
@@ -161,7 +181,7 @@ int transfer_process(char* i_) {
 
   /* This function execute memory instruction */
 
-  /* Add memory instructions here */ 
+  /* Add memory instructions here */
 
   return 1;
 
@@ -190,8 +210,8 @@ unsigned int OPCODE(unsigned int i_word) {
 
 int decode_and_execute(char* i_) {
 
-  /* 
-     This function decode the instruction and update 
+  /*
+     This function decode the instruction and update
      CPU_State (NEXT_STATE)
   */
 
@@ -221,11 +241,11 @@ int decode_and_execute(char* i_) {
 
 void process_instruction() {
 
-  /* 
+  /*
      execute one instruction here. You should use CURRENT_STATE and modify
      values in NEXT_STATE. You can call mem_read_32() and mem_write_32() to
-     access memory. 
-  */   
+     access memory.
+  */
 
   unsigned int inst_word = mem_read_32(CURRENT_STATE.PC);
   printf("The instruction is: %x \n", inst_word);
