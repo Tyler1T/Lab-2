@@ -136,21 +136,21 @@ int data_process(char* i_) {
 
   //Subtraction command
   if(!strcmp(d_opcode,"0010")) {
-    printf("--- This is an ADD instruction. \n");
+    printf("--- This is an SUB instruction. \n");
     SUB(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
   //Reverse subtraction command
   if(!strcmp(d_opcode,"0011")) {
-    printf("--- This is an ADD instruction. \n");
+    printf("--- This is an RSB instruction. \n");
     SUB(Rd, Operand2, Rn, I, S, CC);
     return 0;
   }
 
-  //Reverse subtraction command
-  if(!strcmp(d_opcode,"0011")) {
-    printf("--- This is an ADD instruction. \n");
+  //Binary or command
+  if(!strcmp(d_opcode,"1100")) {
+    printf("--- This is an ORR instruction. \n");
     SUB(Rd, Operand2, Rn, I, S, CC);
     return 0;
   }
