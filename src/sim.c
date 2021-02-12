@@ -154,6 +154,143 @@ int data_process(char* i_) {
     ORR(Rd, Operand2, Rn, I, S, CC);
     return 0;
   }
+
+
+  //Add with Carry ADC
+  if(!strcmp(d_opcode, "0101")) {
+    printf("--- This is an ADC instruction. \n");
+    ADC(Rd, Rn, Operand2 I, S, CC);
+    return 0;
+  }
+
+
+
+
+  //Branch with Link BL
+  	//Code Here
+
+  //End Code
+
+
+
+  //Logical Left Shift LSL
+  if(!strcmp(d_opcode, "1101") {
+    printf("--- This is an LSL instruction. \n");
+    LSL(_____________________);
+    return 0;
+  }
+
+
+  //Subtract with Carry SBC
+  if(!strcmp(d_opcode, "0110")) {
+    printf("--- This is an SBC instruction. \n");
+    SBC(Rd, Rn, Operand2 I, S, CC);
+    return 0;
+  }
+
+
+
+  //Software Interrupt SWI
+
+  	//Code Here
+
+  //End Code
+
+
+
+  //Compare Negative CMN
+  if(!strcmp(d_opcode, "1011")) {
+    printf("--- This is an ADC instruction. \n");
+    CMN(Rn, Operand2 I, S, CC);
+    return 0;
+  }
+
+  //Logical Shift Right LSR
+  if(!strcmp(d_opcode, "1101")) {
+    printf("--- This is an LSR instruction. \n");
+    LSR(_____________________);
+    return 0;
+  }
+
+
+  //Store Register STR
+  if(!strcmp(______________) {
+    printf("--- This is an STR instruction. \n");
+    STR(_____________________);
+    return 0;
+  }
+
+  //Compare CMP
+  if(!strcmp(d_opcode, "1010")) {
+    printf("--- This is an CMP instruction. \n");
+    CMP(Rn, Operand2 I, S, CC);
+    return 0;
+  }
+
+  //Move MOV
+  if(!strcmp(d_opcode, "1101")) {
+    printf("--- This is an MOV instruction. \n");
+    MOV(_____________________);
+    return 0;
+  }
+
+  //Store Byte STRB
+  if(!strcmp(______________) {
+    printf("--- This is an STRB instruction. \n");
+    STRB(_____________________);
+    return 0;
+  }
+
+  //Arithmetic Shift Right ASR
+  if(!strcmp(d_opcode, "1101")) {
+    printf("--- This is an ASR instruction. \n");
+    ASR(_____________________);
+    return 0;
+  }
+
+  //Bitwise Exclusive OR (XOR)
+  if(!strcmp(d_opcode, "0001")) {
+    printf("--- This is an EOR instruction. \n");
+    EOR(Rd, Rn, Operand2 I, S, CC);
+    return 0;
+  }
+
+  //Bitwise NOT MVN
+  if(!strcmp(d_opcode, "1111")) {
+    printf("--- This is an MVN instruction. \n");
+    MVN(Rd, Rn, Operand2 I, S, CC);
+    return 0;
+  }
+
+  //Branch B
+  	//Code Here
+
+  //End Code
+
+  //Loade Register LDR
+  if(!strcmp(______________) {
+    printf("--- This is an LDR instruction. \n");
+    LDR(_____________________);
+    return 0;
+  }
+
+  //Test Equivalence TEQ
+  if(!strcmp(d_opcode, "1001")) {
+    printf("--- This is an TEQ instruction. \n");
+    TEQ(Rd, Rn, Operand2 I, S, CC);
+    return 0;
+  }
+
+
+
+
+
+
+
+
+
+
+
   return 1;
 }
 
