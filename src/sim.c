@@ -144,14 +144,14 @@ int data_process(char* i_) {
   //Reverse subtraction command
   if(!strcmp(d_opcode,"0011")) {
     printf("--- This is an RSB instruction. \n");
-    SUB(Rd, Operand2, Rn, I, S, CC);
+    RSB(Rd, Operand2, Rn, I, S, CC);
     return 0;
   }
 
   //Binary or command
   if(!strcmp(d_opcode,"1100")) {
     printf("--- This is an ORR instruction. \n");
-    SUB(Rd, Operand2, Rn, I, S, CC);
+    ORR(Rd, Operand2, Rn, I, S, CC);
     return 0;
   }
   return 1;
