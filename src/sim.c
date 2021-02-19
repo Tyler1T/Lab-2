@@ -126,6 +126,7 @@ int data_process(char* i_) {
   printf("\n");
 
   /* Example - use and replicate */
+  //Add command ADD
   if(!strcmp(d_opcode,"0100")) {
     printf("--- This is an ADD instruction. \n");
     ADD(Rd, Rn, Operand2, I, S, CC);
@@ -134,24 +135,24 @@ int data_process(char* i_) {
 
   /* Add other data instructions here */
 
-  //Subtraction command
+  //Subtraction command SUB
   if(!strcmp(d_opcode,"0010")) {
     printf("--- This is an SUB instruction. \n");
     SUB(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
-  //Reverse subtraction command
+  //Reverse subtraction command RSB
   if(!strcmp(d_opcode,"0011")) {
     printf("--- This is an RSB instruction. \n");
-    RSB(Rd, Operand2, Rn, I, S, CC);
+    RSB(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
-  //Binary or command
+  //Binary or command ORR
   if(!strcmp(d_opcode,"1100")) {
     printf("--- This is an ORR instruction. \n");
-    ORR(Rd, Operand2, Rn, I, S, CC);
+    ORR(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
@@ -159,11 +160,9 @@ int data_process(char* i_) {
   //Add with Carry ADC
   if(!strcmp(d_opcode, "0101")) {
     printf("--- This is an ADC instruction. \n");
-    ADC(Rd, Rn, Operand2 I, S, CC);
+    ADC(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
-
-
 
 
   //Branch with Link BL
@@ -172,11 +171,10 @@ int data_process(char* i_) {
   //End Code
 
 
-
   //Logical Left Shift LSL
   if(!strcmp(d_opcode, "1101") {
     printf("--- This is an LSL instruction. \n");
-    LSL(_____________________);
+    LSL(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
@@ -184,10 +182,9 @@ int data_process(char* i_) {
   //Subtract with Carry SBC
   if(!strcmp(d_opcode, "0110")) {
     printf("--- This is an SBC instruction. \n");
-    SBC(Rd, Rn, Operand2 I, S, CC);
+    SBC(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
-
 
 
   //Software Interrupt SWI
@@ -197,68 +194,67 @@ int data_process(char* i_) {
   //End Code
 
 
-
   //Compare Negative CMN
   if(!strcmp(d_opcode, "1011")) {
-    printf("--- This is an ADC instruction. \n");
-    CMN(Rn, Operand2 I, S, CC);
+    printf("--- This is an CMN instruction. \n");
+    CMN(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
   //Logical Shift Right LSR
   if(!strcmp(d_opcode, "1101")) {
     printf("--- This is an LSR instruction. \n");
-    LSR(_____________________);
+    LSR(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
 
   //Store Register STR
-  if(!strcmp(______________) {
+  if(!strcmp(d_opcode, "00") {
     printf("--- This is an STR instruction. \n");
-    STR(_____________________);
+    STR(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
   //Compare CMP
   if(!strcmp(d_opcode, "1010")) {
     printf("--- This is an CMP instruction. \n");
-    CMP(Rn, Operand2 I, S, CC);
+    CMP(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
   //Move MOV
   if(!strcmp(d_opcode, "1101")) {
     printf("--- This is an MOV instruction. \n");
-    MOV(_____________________);
+    MOV(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
   //Store Byte STRB
-  if(!strcmp(______________) {
+  if(!strcmp(d_opcode, "01")) {
     printf("--- This is an STRB instruction. \n");
-    STRB(_____________________);
+    STRB(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
   //Arithmetic Shift Right ASR
   if(!strcmp(d_opcode, "1101")) {
     printf("--- This is an ASR instruction. \n");
-    ASR(_____________________);
+    ASR(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
   //Bitwise Exclusive OR (XOR)
   if(!strcmp(d_opcode, "0001")) {
     printf("--- This is an EOR instruction. \n");
-    EOR(Rd, Rn, Operand2 I, S, CC);
+    EOR(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
   //Bitwise NOT MVN
   if(!strcmp(d_opcode, "1111")) {
     printf("--- This is an MVN instruction. \n");
-    MVN(Rd, Rn, Operand2 I, S, CC);
+    MVN(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
@@ -268,9 +264,9 @@ int data_process(char* i_) {
   //End Code
 
   //Loade Register LDR
-  if(!strcmp(______________) {
+  if(!strcmp(d_opcode, "10")) {
     printf("--- This is an LDR instruction. \n");
-    LDR(_____________________);
+    LDR(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
@@ -284,37 +280,30 @@ int data_process(char* i_) {
   //Bitwise Clear BIC
   if(!strcmp(d_opcode, "1110")) {
     printf("--- This is a BIC instruction. \n");
-    MVN(Rd, Rn, Operand2 I, S, CC);
+    MVN(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
   // Load Byte LDRB
-  if(!strcmp(______________) {
+  if(!strcmp(d_opcode, "11")) {
     printf("--- This is an LDRB instruction. \n");
-    LDRB(_____________________);
+    LDRB(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
   //Rotate Right ROR
-  if(!strcmp(______________) {
+  if(!strcmp(d_opcode, "1101")) {
     printf("--- This is an ROR instruction. \n");
-    ROR(_____________________);
+    ROR(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
   //Test TST
   if(!strcmp(d_opcode, "1000")) {
     printf("--- This is an TST instruction. \n");
-    TST(Rd, Rn, Operand2 I, S, CC);
+    TST(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
-
-
-
-
-
-
-
 
   return 1;
 }
