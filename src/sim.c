@@ -133,7 +133,6 @@ int data_process(char* i_) {
     return 0;
   }
 
-  /* Add other data instructions here */
 
   //Subtraction command SUB
   if(!strcmp(d_opcode,"0010")) {
@@ -142,12 +141,14 @@ int data_process(char* i_) {
     return 0;
   }
 
+
   //Reverse subtraction command RSB
   if(!strcmp(d_opcode,"0011")) {
     printf("--- This is an RSB instruction. \n");
     RSB(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
+
 
   //Binary or command ORR
   if(!strcmp(d_opcode,"1100")) {
@@ -163,12 +164,6 @@ int data_process(char* i_) {
     ADC(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
-
-
-  //Branch with Link BL
-  	//Code Here
-
-  //End Code
 
 
   //Logical Left Shift LSL
@@ -187,19 +182,13 @@ int data_process(char* i_) {
   }
 
 
-  //Software Interrupt SWI
-
-  	//Code Here
-
-  //End Code
-
-
   //Compare Negative CMN
   if(!strcmp(d_opcode, "1011")) {
     printf("--- This is an CMN instruction. \n");
     CMN(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
+
 
   //Logical Shift Right LSR
   if(!strcmp(d_opcode, "1101")) {
@@ -209,19 +198,13 @@ int data_process(char* i_) {
   }
 
 
-  //Store Register STR
-  if(!strcmp(d_opcode, "00") {
-    printf("--- This is an STR instruction. \n");
-    STR(Rd, Rn, Operand2, I, S, CC);
-    return 0;
-  }
-
   //Compare CMP
   if(!strcmp(d_opcode, "1010")) {
     printf("--- This is an CMP instruction. \n");
     CMP(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
+
 
   //Move MOV
   if(!strcmp(d_opcode, "1101")) {
@@ -230,12 +213,6 @@ int data_process(char* i_) {
     return 0;
   }
 
-  //Store Byte STRB
-  if(!strcmp(d_opcode, "01")) {
-    printf("--- This is an STRB instruction. \n");
-    STRB(Rd, Rn, Operand2, I, S, CC);
-    return 0;
-  }
 
   //Arithmetic Shift Right ASR
   if(!strcmp(d_opcode, "1101")) {
@@ -244,12 +221,14 @@ int data_process(char* i_) {
     return 0;
   }
 
+
   //Bitwise Exclusive OR (XOR)
   if(!strcmp(d_opcode, "0001")) {
     printf("--- This is an EOR instruction. \n");
     EOR(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
+
 
   //Bitwise NOT MVN
   if(!strcmp(d_opcode, "1111")) {
@@ -258,17 +237,6 @@ int data_process(char* i_) {
     return 0;
   }
 
-  //Branch B
-  	//Code Here
-
-  //End Code
-
-  //Loade Register LDR
-  if(!strcmp(d_opcode, "10")) {
-    printf("--- This is an LDR instruction. \n");
-    LDR(Rd, Rn, Operand2, I, S, CC);
-    return 0;
-  }
 
   //Test Equivalence TEQ
   if(!strcmp(d_opcode, "1001")) {
@@ -277,6 +245,7 @@ int data_process(char* i_) {
     return 0;
   }
 
+
   //Bitwise Clear BIC
   if(!strcmp(d_opcode, "1110")) {
     printf("--- This is a BIC instruction. \n");
@@ -284,12 +253,6 @@ int data_process(char* i_) {
     return 0;
   }
 
-  // Load Byte LDRB
-  if(!strcmp(d_opcode, "11")) {
-    printf("--- This is an LDRB instruction. \n");
-    LDRB(Rd, Rn, Operand2, I, S, CC);
-    return 0;
-  }
 
   //Rotate Right ROR
   if(!strcmp(d_opcode, "1101")) {
@@ -297,6 +260,7 @@ int data_process(char* i_) {
     ROR(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
+
 
   //Test TST
   if(!strcmp(d_opcode, "1000")) {
@@ -311,8 +275,28 @@ int data_process(char* i_) {
 int branch_process(char* i_) {
 
   /* This function execute branch instruction */
-
   /* Add branch instructions here */
+
+    //Branch with Link BL
+    if(!strcmp(d_opcode, "")) {
+      printf("--- This is an BL instruction. \n");
+      BL();
+      return 0;
+    }
+
+    //Branch B
+    if(!strcmp(d_opcode, "")) {
+      printf("--- This is an BL instruction. \n");
+      B();
+      return 0;
+    }
+
+    //Software Interrupt SWI
+    if(!strcmp(d_opcode, "")) {
+      printf("--- This is an SWI instruction. \n");
+      SWI();
+      return 0;
+    }
 
   return 1;
 
@@ -331,8 +315,35 @@ int mul_process(char* i_) {
 int transfer_process(char* i_) {
 
   /* This function execute memory instruction */
-
   /* Add memory instructions here */
+
+  //Store Register STR
+  if(!strcmp(d_opcode, "00") {
+    printf("--- This is an STR instruction. \n");
+    STR(Rd, Rn, Operand2, I, S, CC);
+    return 0;
+  }
+
+  //Store Byte STRB
+  if(!strcmp(d_opcode, "01")) {
+    printf("--- This is an STRB instruction. \n");
+    STRB(Rd, Rn, Operand2, I, S, CC);
+    return 0;
+  }
+
+  //Loade Register LDR
+  if(!strcmp(d_opcode, "10")) {
+    printf("--- This is an LDR instruction. \n");
+    LDR(Rd, Rn, Operand2, I, S, CC);
+    return 0;
+  }
+
+  // Load Byte LDRB
+  if(!strcmp(d_opcode, "11")) {
+    printf("--- This is an LDRB instruction. \n");
+    LDRB(Rd, Rn, Operand2, I, S, CC);
+    return 0;
+  }
 
   return 1;
 
