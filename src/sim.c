@@ -81,7 +81,7 @@ int data_process(char* i_) {
     0010 = SUB - Rd:= Op1 - Op2   DONE
     0011 = RSB - Rd:= Op2 - Op1   DONE
     0100 = ADD - Rd:= Op1 + Op2   DONE
-    0101 = ADC - Rd:= Op1 + Op2 + C
+    0101 = ADC - Rd:= Op1 + Op2 + C DONE
     0110 = SBC - Rd:= Op1 - Op2 + C - 1
     0111 = RSC - Rd:= Op2 - Op1 + C - 1
     1000 = TST - set condition codes on Op1 AND Op2
@@ -121,7 +121,7 @@ int data_process(char* i_) {
   int Operand2 = bchar_to_int(operand2);
   int I = i_[6]-'0';
   int S = i_[11]-'0';
-  int CC = bchar_to_int(d_cond);
+  int CC = bchar_to_int(d_cond);  //CC stand for condition code
   printf("Opcode = %s\n Rn = %d\n Rd = %d\n Operand2 = %s\n I = %d\n S = %d\n COND = %s\n", d_opcode, Rn, Rd, byte_to_binary12(Operand2), I, S, byte_to_binary4(CC));
   printf("\n");
 
