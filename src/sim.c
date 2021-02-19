@@ -281,8 +281,33 @@ int data_process(char* i_) {
     return 0;
   }
 
+  //Bitwise Clear BIC
+  if(!strcmp(d_opcode, "1110")) {
+    printf("--- This is a BIC instruction. \n");
+    MVN(Rd, Rn, Operand2 I, S, CC);
+    return 0;
+  }
 
+  // Load Byte LDRB
+  if(!strcmp(______________) {
+    printf("--- This is an LDRB instruction. \n");
+    LDRB(_____________________);
+    return 0;
+  }
 
+  //Rotate Right ROR
+  if(!strcmp(______________) {
+    printf("--- This is an ROR instruction. \n");
+    ROR(_____________________);
+    return 0;
+  }
+
+  //Test TST
+  if(!strcmp(d_opcode, "1000")) {
+    printf("--- This is an TST instruction. \n");
+    TST(Rd, Rn, Operand2 I, S, CC);
+    return 0;
+  }
 
 
 
