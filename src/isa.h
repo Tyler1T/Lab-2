@@ -297,7 +297,11 @@ int BIC (char* i_);
 int BL (char* i_);
 int CMN (char* i_);
 int CMP (char* i_);
-int EOR (char* i_);
+int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
+  int gateOne = !AND(Rd, Rn, Operand2, I, S, CC);
+  int gateTwo = ORR(Rd, Rn, Operand2, I, S, CC);
+  return gateOne & gateTwo;
+}
 int LDR (char* i_);
 int LDRB (char* i_);
 int LSL (char* i_);
@@ -328,32 +332,32 @@ int ORR (int Rd, int Rn, int Operand2, int I, int S, int CC){
       if (bit4 == 0)
         //switch determines how Rm will be shifted
         switch (sh) {
-          case 0: cur = CURRENT_STATE.REGS[Rn] &
+          case 0: cur = CURRENT_STATE.REGS[Rn] |
     	     (CURRENT_STATE.REGS[Rm] << shamt5);
     	    break;
-          case 1: cur = CURRENT_STATE.REGS[Rn] &
+          case 1: cur = CURRENT_STATE.REGS[Rn] |
     	     (CURRENT_STATE.REGS[Rm] >> shamt5);
     	    break;
-          case 2: cur = CURRENT_STATE.REGS[Rn] &
+          case 2: cur = CURRENT_STATE.REGS[Rn] |
     	     (CURRENT_STATE.REGS[Rm] >> shamt5);
       	  break;
-          case 3: cur = CURRENT_STATE.REGS[Rn] &
+          case 3: cur = CURRENT_STATE.REGS[Rn] |
   	       ((CURRENT_STATE.REGS[Rm] >> shamt5) |
                  (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
   	      break;
         }else
           //switch determines how Rm will be shifted
           switch (sh) {
-            case 0: cur = CURRENT_STATE.REGS[Rn] &
+            case 0: cur = CURRENT_STATE.REGS[Rn] |
     	       (CURRENT_STATE.REGS[Rm] << CURRENT_STATE.REGS[Rs]);
     	      break;
-            case 1: cur = CURRENT_STATE.REGS[Rn] &
+            case 1: cur = CURRENT_STATE.REGS[Rn] |
     	       (CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]);
     	      break;
-            case 2: cur = CURRENT_STATE.REGS[Rn] &
+            case 2: cur = CURRENT_STATE.REGS[Rn] |
     	       (CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]);
     	      break;
-            case 3: cur = CURRENT_STATE.REGS[Rn] &
+            case 3: cur = CURRENT_STATE.REGS[Rn] |
     	       ((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
                    (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs])));
     	      break;
@@ -368,7 +372,7 @@ int ORR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
       int rotate = Operand2 >> 8;
       int Imm = Operand2 & 0x000000FF;
-      cur = CURRENT_STATE.REGS[Rn] & (Imm>>2*rotate|(Imm<<(32-2*rotate)));
+      cur = CURRENT_STATE.REGS[Rn] | (Imm>>2*rotate|(Imm<<(32-2*rotate)));
     }
     NEXT_STATE.REGS[Rd] = cur;
 
@@ -382,7 +386,7 @@ int ORR (int Rd, int Rn, int Operand2, int I, int S, int CC){
         NEXT_STATE.CPSR |= Z_N;
     }
     return 0;
-  }
+}
 int ROR (char* i_);
 int SBC (char* i_);
 int STR (char* i_);
