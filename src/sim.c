@@ -165,14 +165,6 @@ int data_process(char* i_) {
 
 
 
-
-  //Branch with Link BL
-  	//Code Here
-
-  //End Code
-
-
-
   //Logical Left Shift LSL
   if(!strcmp(d_opcode, "1101") {
     printf("--- This is an LSL instruction. \n");
@@ -187,15 +179,6 @@ int data_process(char* i_) {
     SBC(Rd, Rn, Operand2 I, S, CC);
     return 0;
   }
-
-
-
-  //Software Interrupt SWI
-
-  	//Code Here
-
-  //End Code
-
 
 
   //Compare Negative CMN
