@@ -376,7 +376,8 @@ int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
         int rotate = Operand2 >> 8;
         int Imm = Operand2 & 0x000000FF;
         nand = !(CURRENT_STATE.REGS[Rn] & (Imm>>2*rotate|(Imm<<(32-2*rotate))));
-        or
+        or = CURRENT_STATE.REGS[Rn] | (Imm>>2*rotate|(Imm<<(32-2*rotate)));
+        cur = nand & or;
       }
       NEXT_STATE.REGS[Rd] = cur;
 

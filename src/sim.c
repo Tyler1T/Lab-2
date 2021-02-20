@@ -165,15 +165,6 @@ int data_process(char* i_) {
   }
 
 
-<<<<<<< HEAD
-=======
-  //Branch with Link BL
-  	//Code Here
-
-  //End Code
-
->>>>>>> 7d454fb14c1910f20c5d18753ac4696cac53d21b
-
   //Logical Left Shift LSL
   if(!strcmp(d_opcode, "1101") {
     printf("--- This is an LSL instruction. \n");
@@ -190,16 +181,6 @@ int data_process(char* i_) {
   }
 
 
-<<<<<<< HEAD
-=======
-  //Software Interrupt SWI
-
-  	//Code Here
-
-  //End Code
-
-
->>>>>>> 7d454fb14c1910f20c5d18753ac4696cac53d21b
   //Compare Negative CMN
   if(!strcmp(d_opcode, "1011")) {
     printf("--- This is an CMN instruction. \n");
