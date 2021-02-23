@@ -314,7 +314,7 @@ int branch_process(char* i_) {
   //opcode code is 4 bits long plus a termination for the array
   char func[3];
   func[0] = 1;
-  func[1] = i_[7];
+  func[1] = i_[7] - '0';
   func[2] = '\0';
 
 
@@ -322,16 +322,13 @@ int branch_process(char* i_) {
 
   //setting rn, rd, func, and operand2 arrays
   for(int i = 0; i < 24; i++) {
-    func[i] = i_[8+i];
+    imm[i] = i_[8+i];
   }
 
   int funct = bchar_to_int(func);
-  int Rn = bchar_to_int(rn);
-  int Rd = bchar_to_int(rd);
-  int Operand2 = bchar_to_int(operand2);
+  int imm24 = bchar_to_int(imm);
   int CC = bchar_to_int(d_cond);
-  // NOT FINISHED 
-  printf("CC = %d\n func = %d\n imm24 = %d\n Operand2 = %s\n IPUBWL = %s\n", CC, byte_to_binary4(func), byte_to_binary12(Operand2));
+  printf("CC = %d\n imm24 = %d\n BL or B = %s\n", CC, imm24, funct);
   printf("\n");
 
   /* Add branch instructions here */
@@ -388,12 +385,14 @@ int transfer_process(char* i_) {
   for(int i = 0; i < 12; i++) {
     operand2[i] = i_[20+i];
   }
+
+  int CC = bchar_to_int(d_cond);
   int func = bchar_to_int(func);
   int Rn = bchar_to_int(rn);
   int Rd = bchar_to_int(rd);
   int Operand2 = bchar_to_int(operand2);
 
-  printf("Opcode = %s\n Rn = %d\n Rd = %d\n Operand2 = %s\n IPUBWL = %s\n", d_opcode, Rn, Rd, byte_to_binary12(Operand2), byte_to_binary4(func));
+  printf("CC = %s\n Rn = %d\n Rd = %d\n Operand2 = %s\n IPUBWL = %s\n", CC, Rn, Rd, byte_to_binary12(Operand2), func);
   printf("\n");
 
 
