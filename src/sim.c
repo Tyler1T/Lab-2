@@ -113,9 +113,11 @@ int data_process(char* i_) {
     rn[i] = i_[12+i];
     rd[i] = i_[16+i];
   }
+
   for(int i = 0; i < 12; i++) {
     operand2[i] = i_[20+i];
   }
+
   int Rn = bchar_to_int(rn);
   int Rd = bchar_to_int(rd);
   int Operand2 = bchar_to_int(operand2);
@@ -181,7 +183,53 @@ int transfer_process(char* i_) {
 
   /* This function execute memory instruction */
 
-  /* Add memory instructions here */
+  //condition code is 4 bits long plus a terminaiton for the array
+  char d_cond[5];
+  d_cond[0] = i_[0];
+  d_cond[1] = i_[1];
+  d_cond[2] = i_[2];
+  d_cond[3] = i_[3];
+  d_cond[4] = '\0';
+
+  //the 4 and 5 bits are operation and they are 01 for memory operations
+
+  //opcode code is 4 bits long plus a termination for the array
+  char d_opcode[5];
+  d_opcode[0] = i_[7];
+  d_opcode[1] = i_[8];
+  d_opcode[2] = i_[9];
+  d_opcode[3] = i_[10];
+  d_opcode[5] = '\0';
+
+  char rn[5]; rn[4] = '\0';
+  char rd[5]; rd[4] = '\0';
+  char func[7]; func[6] = '\0';
+  char operand2[13]; operand2[12] = '\0';
+
+  //setting rn, rd, func, and operand2 arrays
+  for(int i = 0; i < 6; i++) {
+    func[i] = i_[6+i];
+  }
+  for(int i = 0; i < 4; i++) {
+    rn[i] = i_[12+i];
+    rd[i] = i_[16+i];
+  }
+  for(int i = 0; i < 12; i++) {
+    operand2[i] = i_[20+i];
+  }
+  int func = bchar_to_int(func);
+  int Rn = bchar_to_int(rn);
+  int Rd = bchar_to_int(rd);
+  int Operand2 = bchar_to_int(operand2);
+
+  printf("Opcode = %s\n Rn = %d\n Rd = %d\n Operand2 = %s\n IPUBWL = %s\n", d_opcode, Rn, Rd, byte_to_binary12(Operand2), byte_to_binary4(func));
+  printf("\n");
+
+
+  /* Add memory instructions here, interpretting the opcodes
+      and call a specific command in the ISA
+  */
+
 
   return 1;
 
