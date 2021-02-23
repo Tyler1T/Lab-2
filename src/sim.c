@@ -190,7 +190,7 @@ int branch_process(char* i_) {
   int funct = bchar_to_int(func);
   int imm24 = bchar_to_int(imm);
   int CC = bchar_to_int(d_cond);
-  printf("CC = %d\n imm24 = %d\n IPUBWL = %s\n", CC, imm24, funct);
+  printf("CC = %d\n imm24 = %d\n BL or B = %s\n", CC, imm24, funct);
   printf("\n");
 
   /* Add branch instructions here */
@@ -247,12 +247,14 @@ int transfer_process(char* i_) {
   for(int i = 0; i < 12; i++) {
     operand2[i] = i_[20+i];
   }
+
+  int CC = bchar_to_int(d_cond);
   int func = bchar_to_int(func);
   int Rn = bchar_to_int(rn);
   int Rd = bchar_to_int(rd);
   int Operand2 = bchar_to_int(operand2);
 
-  printf("Opcode = %s\n Rn = %d\n Rd = %d\n Operand2 = %s\n IPUBWL = %s\n", d_opcode, Rn, Rd, byte_to_binary12(Operand2), byte_to_binary4(func));
+  printf("CC = %s\n Rn = %d\n Rd = %d\n Operand2 = %s\n IPUBWL = %s\n", CC, Rn, Rd, byte_to_binary12(Operand2), func);
   printf("\n");
 
 
