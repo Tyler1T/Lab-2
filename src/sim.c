@@ -163,6 +163,39 @@ int branch_process(char* i_) {
 
   /* This function execute branch instruction */
 
+  //condition code is 4 bits long plus a terminaiton for the array
+  char d_cond[5];
+  d_cond[0] = i_[0];
+  d_cond[1] = i_[1];
+  d_cond[2] = i_[2];
+  d_cond[3] = i_[3];
+  d_cond[4] = '\0';
+
+  //the 4 and 5 bits are operation and they are 10 for branch operations
+
+  //opcode code is 4 bits long plus a termination for the array
+  char func[3];
+  func[0] = 1;
+  func[1] = i_[7];
+  func[2] = '\0';
+
+
+  char imm[25]; imm[24] = '\0';
+
+  //setting rn, rd, func, and operand2 arrays
+  for(int i = 0; i < 24; i++) {
+    func[i] = i_[8+i];
+  }
+
+  int funct = bchar_to_int(func);
+  int Rn = bchar_to_int(rn);
+  int Rd = bchar_to_int(rd);
+  int Operand2 = bchar_to_int(operand2);
+  int CC = bchar_to_int(d_cond);
+  // NOT FINISHED 
+  printf("CC = %d\n func = %d\n imm24 = %d\n Operand2 = %s\n IPUBWL = %s\n", CC, byte_to_binary4(func), byte_to_binary12(Operand2));
+  printf("\n");
+
   /* Add branch instructions here */
 
   return 1;
