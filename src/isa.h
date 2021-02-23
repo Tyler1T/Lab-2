@@ -129,6 +129,8 @@ int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
       NEXT_STATE.CPSR |= N_N;
     if (cur == 0)
       NEXT_STATE.CPSR |= Z_N;
+    if(cur > 0xffffffff)
+      NEXT_STATE.CPSR |= V_N;
   }
   return 0;
 
@@ -287,6 +289,8 @@ int AND (int Rd, int Rn, int Operand2, int I, int S, int CC){
         NEXT_STATE.CPSR |= N_N;
       if (cur == 0)
         NEXT_STATE.CPSR |= Z_N;
+      if(cur > 0xffffffff)
+        NEXT_STATE.CPSR |= V_N;
     }
     return 0;
 }
@@ -389,6 +393,8 @@ int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
           NEXT_STATE.CPSR |= N_N;
         if (cur == 0)
           NEXT_STATE.CPSR |= Z_N;
+        if(cur > 0xffffffff)
+          NEXT_STATE.CPSR |= V_N;
       }
       return 0;
 }
@@ -474,6 +480,8 @@ int ORR (int Rd, int Rn, int Operand2, int I, int S, int CC){
         NEXT_STATE.CPSR |= N_N;
       if (cur == 0)
         NEXT_STATE.CPSR |= Z_N;
+      if(cur > 0xffffffff)
+        NEXT_STATE.CPSR |= V_N;
     }
     return 0;
 }
@@ -534,6 +542,8 @@ int SUB (int Rd, int Rn, int Operand2, int I, int S, int CC) {
       NEXT_STATE.CPSR |= N_N;
     if (cur == 0)
       NEXT_STATE.CPSR |= Z_N;
+    if(cur > 0xffffffff)
+      NEXT_STATE.CPSR |= V_N;
   }
   return 0;
 }
