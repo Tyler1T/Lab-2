@@ -211,7 +211,7 @@ int data_process(char* i_) {
   //Move MOV
   if(!strcmp(d_opcode, "1101")) {
     printf("--- This is an MOV instruction. \n");
-    MOV(Rd, Operand2, I);
+    MOV(Rd, Operand2, I, S);
     return 0;
   }
 

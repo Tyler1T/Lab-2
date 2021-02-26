@@ -462,14 +462,28 @@ int MOV (int Rd, int Operand2, int I, int S){
     if(cur > 0xffffffff){
       NEXT_STATE.CPSR |= C_N;
   }
-
+  return 0;
 }
 
 
-int MVN (int Rd, int Rn, int Operand2, int I, int S, int CC){
+int MVN (int Rd, int Rn, int S){
+  // Move the NOT of Rn into Rd
+  int cur = NEXT_STATE.REGS[Rd] = ~CURRENT_STATE.REGS[Rn];
 
-
-
+  /*
+    If S = 1 then set the condition flags
+  */
+  if (S == 1) {
+    if (cur < 0)
+      NEXT_STATE.CPSR |= N_N;
+    if (cur == 0)
+      NEXT_STATE.CPSR |= Z_N;
+    if(cur > 0xffffffff){
+      NEXT_STATE.CPSR |= V_N;
+      NEXT_STATE.CPSR |= C_N;
+    }
+  }
+  return 0;
 }
 
 int ORR (int Rd, int Rn, int Operand2, int I, int S, int CC){
