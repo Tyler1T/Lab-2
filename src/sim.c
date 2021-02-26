@@ -301,25 +301,18 @@ int branch_process(char* i_) {
   /* Add branch instructions here */
 
     //Branch with Link BL
-    if(!strcmp(d_opcode, "11")) {
+    if((i_[7] == '0')) {
+      printf("--- This is an B instruction. \n");
+      B();
 
-      printf("--- This is an BL instruction. \n");
-      BL();
       return 0;
     }
 
     //Branch B
-    if(!strcmp(d_opcode, "10")) {
-      printf("--- This is an B instruction. \n");
+    if((i_[7] == '1')) {
+      printf("--- This is an BL instruction. \n");
+      BL();
 
-      B();
-      return 0;
-    }
-
-    //Software Interrupt SWI
-    if(!strcmp(d_opcode, "")) {
-      printf("--- This is an SWI instruction. \n");
-      SWI();
       return 0;
     }
 
@@ -340,6 +333,7 @@ int mul_process(char* i_) {
 int transfer_process(char* i_) {
 
   /* This function execute memory instruction */
+
 
   //condition code is 4 bits long plus a terminaiton for the array
   char d_cond[5];
@@ -389,35 +383,33 @@ int transfer_process(char* i_) {
   /* Add memory instructions here, interpretting the opcodes
       and call a specific command in the ISA
   */
-
-  //Store Byte STRB
-  if(!strcmp(d_opcode, "01")) {
-    printf("--- This is an STRB instruction. \n");
-    STRB(Rd, Rn, Operand2);
-
-    return 0;
-  }
-
-  // Load Byte LDRB
-  if(!strcmp(d_opcode, "11")) {
-    printf("--- This is an LDRB instruction. \n");
-    LDRB(Rd, Rn, Operand2);
-
-    return 0;
-  }
-
-  //Loade Register LDR
-  if(!strcmp(d_opcode, "10")) {
-    printf("--- This is an LDR instruction. \n");
-    LDR(Rd, Rn, Operand2);
-
-    return 0;
-  }
-
+  
   //Store Register STR
-  if(!strcmp(d_opcode, "00") {
+  if((i_[9] == '0') && (i_[11] == '0')) {
     printf("--- This is an STR instruction. \n");
     STR(Rd, Rn, Operand2);
+    return 0;
+  }
+
+  //Load Register LDR
+  if((i_[9] == '0') && (i_[11] == '1')) {
+    printf("--- This is an LDR instruction. \n");
+    LDR(Rd, Rn, Operand2);
+    return 0;
+  }
+
+  //Store Byte STRB
+  if((i_[9] == '1') && (i_[11] == '0')) {
+    printf("--- This is an STRB instruction. \n");
+    STRB(Rd, Rn, Operand2);
+    return 0;
+  }
+
+
+  // Load Byte LDRB
+  if((i_[9] == '1') && (i_[11] == '1')) {
+    printf("--- This is an LDRB instruction. \n");
+    LDRB(Rd, Rn, Operand2);
 
     return 0;
   }

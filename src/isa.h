@@ -140,6 +140,7 @@ int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
     if(cur > 0xffffffff){
       NEXT_STATE.CPSR |= V_N;
       NEXT_STATE.CPSR |= C_N;
+
     }
   }
   return 0;
@@ -169,11 +170,12 @@ int ADC (int Rd, int Rn, int Operand2, int I, int S, int CC) {
       //switch determines how Rm will be shifted
       switch (sh) {
         case 0: cur = CURRENT_STATE.REGS[Rn] +
-  	     (CURRENT_STATE.REGS[Rm] << shamt5);
+  	     (CURRENT_STATE.REGS[Rm] << shamt5) + C_CUR;
   	    break;
         case 1: cur = CURRENT_STATE.REGS[Rn] +
-  	     (CURRENT_STATE.REGS[Rm] >> shamt5);
+  	     (CURRENT_STATE.REGS[Rm] >> shamt5) + C_CUR;
   	    break;
+
         case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
                   cur = CURRENT_STATE.REGS[Rm] >> shamt5;
                 else{
@@ -183,17 +185,18 @@ int ADC (int Rd, int Rn, int Operand2, int I, int S, int CC) {
     	  break;
         case 3: cur = CURRENT_STATE.REGS[Rn] +
 	       ((CURRENT_STATE.REGS[Rm] >> shamt5) |
-               (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
+               (CURRENT_STATE.REGS[Rm] << (32 - shamt5))) + C_CUR;
 	      break;
       }else
         //switch determines how Rm will be shifted
         switch (sh) {
           case 0: cur = CURRENT_STATE.REGS[Rn] +
-  	       (CURRENT_STATE.REGS[Rm] << CURRENT_STATE.REGS[Rs]);
+  	       (CURRENT_STATE.REGS[Rm] << CURRENT_STATE.REGS[Rs]) + C_CUR;
   	      break;
           case 1: cur = CURRENT_STATE.REGS[Rn] +
-  	       (CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]);
+  	       (CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) + C_CUR;
   	      break;
+
           case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
                     cur = CURRENT_STATE.REGS[Rm] >> shamt5;
                   else{
@@ -203,7 +206,8 @@ int ADC (int Rd, int Rn, int Operand2, int I, int S, int CC) {
   	      break;
           case 3: cur = CURRENT_STATE.REGS[Rn] +
   	       ((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
-                 (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs])));
+                 (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs])))
+                  + C_CUR ;
   	      break;
         }
   }
@@ -216,7 +220,7 @@ int ADC (int Rd, int Rn, int Operand2, int I, int S, int CC) {
 
     int rotate = Operand2 >> 8;
     int Imm = Operand2 & 0x000000FF;
-    cur = CURRENT_STATE.REGS[Rn] + (Imm>>2*rotate|(Imm<<(32-2*rotate)));
+    cur = CURRENT_STATE.REGS[Rn] + (Imm>>2*rotate|(Imm<<(32-2*rotate))) + C_CUR;
   }
   NEXT_STATE.REGS[Rd] = cur;
 
@@ -228,6 +232,9 @@ int ADC (int Rd, int Rn, int Operand2, int I, int S, int CC) {
       NEXT_STATE.CPSR |= N_N;
     if (cur == 0)
       NEXT_STATE.CPSR |= Z_N;
+    if(cur > 0xFFFFFFFF)
+      NEXT_STATE.CPSR |= V_N;
+      NEXT_STATE.CPSR |= C_N;
   }
   return 0;
 
@@ -316,10 +323,11 @@ int AND (int Rd, int Rn, int Operand2, int I, int S, int CC){
       if (cur == 0)
         NEXT_STATE.CPSR |= Z_N;
       if(cur > 0xffffffff)
-        NEXT_STATE.CPSR |= V_N;
-    }
-    return 0;
+        NEXT_STATE.CPSR |= C_N;
+  }
+  return 0;
 }
+
 int ASR (char* i_){
   //Pseudo Code
   /*
@@ -340,12 +348,109 @@ int ASR (char* i_){
   */
 
   if()
+
+
+
+
+  /*
+    If S = 1 then set the condition flags
+  */
+  if (S == 1) {
+    if (cur < 0)
+      NEXT_STATE.CPSR |= N_N;
+    if (cur == 0)
+      NEXT_STATE.CPSR |= Z_N;
+    if(cur > 0xffffffff)
+      NEXT_STATE.CPSR |= C_N;
 }
-int B (char* i_);
-int BIC (char* i_);
-int BL (char* i_);
-int CMN (char* i_);
-int CMP (char* i_);
+return 0;
+
+
+}
+
+int BIC (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
+
+
+
+
+
+
+
+  /*
+    If S = 1 then set the condition flags
+  */
+  if (S == 1) {
+    if (cur < 0)
+      NEXT_STATE.CPSR |= N_N;
+    if (cur == 0)
+      NEXT_STATE.CPSR |= Z_N;
+    if(cur > 0xffffffff)
+      NEXT_STATE.CPSR |= C_N;
+  }
+  return 0;
+
+
+}
+
+int CMN (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
+
+
+
+  if immed_5 == 0
+    C Flag = Rm[31]
+    if Rm[31] == 0 then
+      Rd = 0
+    else
+      Rd = 0xFFFFFFFF
+  else
+    C Flag = Rm[immed_5 - 1]
+    Rd = Rm Arithmetic_Shift_Right immed_5
+  N Flag = Rd[31]
+  Z Flag = if Rd == 0 then 1 else 0
+  V Flag = unaffected
+
+  */
+
+  /*
+    If S = 1 then set the condition flags
+  */
+  if (S == 1) {
+    if (cur < 0)
+      NEXT_STATE.CPSR |= N_N;
+    if (cur == 0)
+      NEXT_STATE.CPSR |= Z_N;
+    if(cur > 0xffffffff)
+      NEXT_STATE.CPSR |= V_N;
+      NEXT_STATE.CPSR |= C_N;
+  }
+  return 0;
+}
+
+int CMP (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
+
+
+
+
+
+  /*
+    If S = 1 then set the condition flags
+  */
+  if (S == 1) {
+    if (cur < 0)
+      NEXT_STATE.CPSR |= N_N;
+    if (cur == 0)
+      NEXT_STATE.CPSR |= Z_N;
+    if(cur > 0xffffffff)
+      NEXT_STATE.CPSR |= V_N;
+      NEXT_STATE.CPSR |= C_N;
+  }
+  return 0;
+}
+
+
 int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
       int cur = 0;
@@ -440,11 +545,13 @@ int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
         if (cur == 0)
           NEXT_STATE.CPSR |= Z_N;
         if(cur > 0xffffffff)
-          NEXT_STATE.CPSR |= V_N;
-      }
+          NEXT_STATE.CPSR |= C_N;
+    }
       return 0;
 }
+
 int LDR (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
 
 
 
@@ -456,6 +563,7 @@ int LDRB (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 
 }
+
 
 
 int LSL (int Rd, int Rn, int Operand2, int I, int S){
@@ -517,20 +625,20 @@ int LSL (int Rd, int Rn, int Operand2, int I, int S){
 
     NEXT_STATE.REGS[Rd] = cur;
 
-    /*
-      If S = 1 then set the condition flags
-    */
-    if (S == 1) {
-      if (cur < 0)
-        NEXT_STATE.CPSR |= N_N;
-      if (cur == 0)
-        NEXT_STATE.CPSR |= Z_N;
-      if(cur > 0xffffffff){
-        NEXT_STATE.CPSR |= V_N;
-        NEXT_STATE.CPSR |= C_N;
-      }
-    }
-    return 0;
+  /*
+    If S = 1 then set the condition flags
+  */
+  if (S == 1) {
+    if (cur < 0)
+      NEXT_STATE.CPSR |= N_N;
+    if (cur == 0)
+      NEXT_STATE.CPSR |= Z_N;
+    if(cur > 0xffffffff)
+      NEXT_STATE.CPSR |= C_N;
+  }
+  return 0;
+
+
 }
 
 
@@ -659,7 +767,7 @@ int ORR (int Rd, int Rn, int Operand2, int I, int S, int CC){
       if (cur == 0)
         NEXT_STATE.CPSR |= Z_N;
       if(cur > 0xffffffff)
-        NEXT_STATE.CPSR |= V_N;
+        NEXT_STATE.CPSR |= C_N;
     }
     return 0;
 }
@@ -669,12 +777,41 @@ int ROR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 
 
+
+  /*
+    If S = 1 then set the condition flags
+  */
+  if (S == 1) {
+    if (cur < 0)
+      NEXT_STATE.CPSR |= N_N;
+    if (cur == 0)
+      NEXT_STATE.CPSR |= Z_N;
+    if(cur > 0xffffffff)
+      NEXT_STATE.CPSR |= C_N;
+  }
+  return 0;
+
 }
 
 
 int SBC (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 
+
+
+  /*
+    If S = 1 then set the condition flags
+  */
+  if (S == 1) {
+    if (cur < 0)
+      NEXT_STATE.CPSR |= N_N;
+    if (cur == 0)
+      NEXT_STATE.CPSR |= Z_N;
+    if(cur > 0xffffffff)
+      NEXT_STATE.CPSR |= C_N;
+      NEXT_STATE.CPSR |= V_N;
+  }
+  return 0;
 
 }
 
@@ -750,13 +887,16 @@ int SUB (int Rd, int Rn, int Operand2, int I, int S, int CC) {
     cur = CURRENT_STATE.REGS[Rn] - (Imm>>2*rotate|(Imm<<(32-2*rotate)));
   }
   NEXT_STATE.REGS[Rd] = cur;
+
   if (S == 1) {
     if (cur < 0)
       NEXT_STATE.CPSR |= N_N;
     if (cur == 0)
       NEXT_STATE.CPSR |= Z_N;
-    if(cur > 0xffffffff)
+    if(cur > 0xFFFFFFFF){
       NEXT_STATE.CPSR |= V_N;
+      NEXT_STATE.CPSR |= C_N;
+    }
   }
   return 0;
 }
@@ -766,6 +906,19 @@ int TEQ (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 
 
+  /*
+    If S = 1 then set the condition flags
+  */
+  if (S == 1) {
+    if (cur < 0)
+      NEXT_STATE.CPSR |= N_N;
+    if (cur == 0)
+      NEXT_STATE.CPSR |= Z_N;
+    if(cur > 0xffffffff)
+      NEXT_STATE.CPSR |= C_N;
+  }
+  return 0;
+
 }
 
 
@@ -773,10 +926,24 @@ int TST (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 
 
+  /*
+    If S = 1 then set the condition flags
+  */
+  if (S == 1) {
+    if (cur < 0)
+      NEXT_STATE.CPSR |= N_N;
+    if (cur == 0)
+      NEXT_STATE.CPSR |= Z_N;
+    if(cur > 0xffffffff)
+      NEXT_STATE.CPSR |= C_N;
+  }
+  return 0;
+
 }
 
 int B (char* i_);
 int BL (char* i_);
+
 int MLA (char* i_);
 int MUL (char* i_);
 
