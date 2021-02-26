@@ -212,6 +212,7 @@ int data_process(char* i_) {
   if(!strcmp(d_opcode, "1101")) {
     printf("--- This is an MOV instruction. \n");
     MOV(Rd, Operand2, I, S);
+
     return 0;
   }
 
@@ -301,6 +302,7 @@ int branch_process(char* i_) {
 
     //Branch with Link BL
     if(!strcmp(d_opcode, "11")) {
+
       printf("--- This is an BL instruction. \n");
       BL();
       return 0;
@@ -309,6 +311,7 @@ int branch_process(char* i_) {
     //Branch B
     if(!strcmp(d_opcode, "10")) {
       printf("--- This is an B instruction. \n");
+
       B();
       return 0;
     }
@@ -391,6 +394,7 @@ int transfer_process(char* i_) {
   if(!strcmp(d_opcode, "01")) {
     printf("--- This is an STRB instruction. \n");
     STRB(Rd, Rn, Operand2);
+
     return 0;
   }
 
@@ -398,6 +402,7 @@ int transfer_process(char* i_) {
   if(!strcmp(d_opcode, "11")) {
     printf("--- This is an LDRB instruction. \n");
     LDRB(Rd, Rn, Operand2);
+
     return 0;
   }
 
@@ -405,6 +410,7 @@ int transfer_process(char* i_) {
   if(!strcmp(d_opcode, "10")) {
     printf("--- This is an LDR instruction. \n");
     LDR(Rd, Rn, Operand2);
+
     return 0;
   }
 
@@ -412,6 +418,7 @@ int transfer_process(char* i_) {
   if(!strcmp(d_opcode, "00") {
     printf("--- This is an STR instruction. \n");
     STR(Rd, Rn, Operand2);
+
     return 0;
   }
   return 1;
