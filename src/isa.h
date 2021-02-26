@@ -115,7 +115,6 @@ int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
     is no reason to go to memory again
   */
   if (I == 1) {
-
     int rotate = Operand2 >> 8;
     int Imm = Operand2 & 0x000000FF;
     cur = CURRENT_STATE.REGS[Rn] + (Imm>>2*rotate|(Imm<<(32-2*rotate)));
@@ -452,7 +451,7 @@ int LSR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 
 int MOV (int Rd, int Rn, int Operand2, int I, int S, int CC){
-
+  
 
 
 }
