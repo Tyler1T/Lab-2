@@ -198,13 +198,6 @@ int data_process(char* i_) {
   }
 
 
-  //Store Register STR
-  if(!strcmp(d_opcode, "00") {
-    printf("--- This is an STR instruction. \n");
-    STR(Rd, Rn, Operand2, I, S, CC);
-    return 0;
-  }
-
   //Compare CMP
   if(!strcmp(d_opcode, "1010")) {
     printf("--- This is an CMP instruction. \n");
@@ -219,12 +212,7 @@ int data_process(char* i_) {
     return 0;
   }
 
-  //Store Byte STRB
-  if(!strcmp(d_opcode, "01")) {
-    printf("--- This is an STRB instruction. \n");
-    STRB(Rd, Rn, Operand2, I, S, CC);
-    return 0;
-  }
+
 
   //Arithmetic Shift Right ASR
   if(!strcmp(d_opcode, "1101")) {
@@ -252,13 +240,6 @@ int data_process(char* i_) {
 
   //End Code
 
-  //Loade Register LDR
-  if(!strcmp(d_opcode, "10")) {
-    printf("--- This is an LDR instruction. \n");
-    LDR(Rd, Rn, Operand2, I, S, CC);
-    return 0;
-  }
-
   //Test Equivalence TEQ
   if(!strcmp(d_opcode, "1001")) {
     printf("--- This is an TEQ instruction. \n");
@@ -273,12 +254,7 @@ int data_process(char* i_) {
     return 0;
   }
 
-  // Load Byte LDRB
-  if(!strcmp(d_opcode, "11")) {
-    printf("--- This is an LDRB instruction. \n");
-    LDRB(Rd, Rn, Operand2, I, S, CC);
-    return 0;
-  }
+
 
   //Rotate Right ROR
   if(!strcmp(d_opcode, "1101")) {
@@ -399,6 +375,34 @@ int transfer_process(char* i_) {
   /* Add memory instructions here, interpretting the opcodes
       and call a specific command in the ISA
   */
+
+  //Store Byte STRB
+  if(!strcmp(d_opcode, "01")) {
+    printf("--- This is an STRB instruction. \n");
+    STRB(Rd, Rn, Operand2, I, S, CC);
+    return 0;
+  }
+
+  // Load Byte LDRB
+  if(!strcmp(d_opcode, "11")) {
+    printf("--- This is an LDRB instruction. \n");
+    LDRB(Rd, Rn, Operand2, I, S, CC);
+    return 0;
+  }
+
+  //Loade Register LDR
+  if(!strcmp(d_opcode, "10")) {
+    printf("--- This is an LDR instruction. \n");
+    LDR(Rd, Rn, Operand2, I, S, CC);
+    return 0;
+  }
+
+  //Store Register STR
+  if(!strcmp(d_opcode, "00") {
+    printf("--- This is an STR instruction. \n");
+    STR(Rd, Rn, Operand2, I, S, CC);
+    return 0;
+  }
 
 
   return 1;
