@@ -450,9 +450,18 @@ int LSR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 }
 
 
-int MOV (int Rd, int Rn, int Operand2, int I, int S, int CC){
-  
-
+int MOV (int Rd, int Operand2, int I, int S){
+  if(I == 1 || ((Operand2 & 0x00000ff0) >> 4) == 0x00) {
+    CURRENT_STATE.REGS[Rd] = Operand2;
+  }
+  if (S == 1) {
+    if (cur < 0)
+      NEXT_STATE.CPSR |= N_N;
+    if (cur == 0)
+      NEXT_STATE.CPSR |= Z_N;
+    if(cur > 0xffffffff){
+      NEXT_STATE.CPSR |= C_N;
+  }
 
 }
 

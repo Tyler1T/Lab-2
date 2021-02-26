@@ -211,7 +211,7 @@ int data_process(char* i_) {
   //Move MOV
   if(!strcmp(d_opcode, "1101")) {
     printf("--- This is an MOV instruction. \n");
-    MOV(Rd, Rn, Operand2, I, S, CC);
+    MOV(Rd, Operand2, I);
     return 0;
   }
 
@@ -276,17 +276,9 @@ int branch_process(char* i_) {
 
   /* This function execute branch instruction */
 
-  //condition code is 4 bits long plus a terminaiton for the array
-  char d_cond[5];
-  d_cond[0] = i_[0];
-  d_cond[1] = i_[1];
-  d_cond[2] = i_[2];
-  d_cond[3] = i_[3];
-  d_cond[4] = '\0';
-
   //the 4 and 5 bits are operation and they are 10 for branch operations
 
-  //opcode code is 4 bits long plus a termination for the array
+  //funct code is 2 bits long plus a termination for the array
   char func[3];
   func[0] = 1;
   func[1] = i_[7] - '0';
@@ -295,29 +287,28 @@ int branch_process(char* i_) {
 
   char imm[25]; imm[24] = '\0';
 
-  //setting rn, rd, func, and operand2 arrays
+  //setting imm array
   for(int i = 0; i < 24; i++) {
     imm[i] = i_[8+i];
   }
 
   int funct = bchar_to_int(func);
   int imm24 = bchar_to_int(imm);
-  int CC = bchar_to_int(d_cond);
-  printf("CC = %d\n imm24 = %d\n BL or B = %s\n", CC, imm24, funct);
+  printf("imm24 = %d\n BL or B = %s\n", imm24, funct);
   printf("\n");
 
   /* Add branch instructions here */
 
     //Branch with Link BL
-    if(!strcmp(d_opcode, "")) {
+    if(!strcmp(d_opcode, "11")) {
       printf("--- This is an BL instruction. \n");
       BL();
       return 0;
     }
 
     //Branch B
-    if(!strcmp(d_opcode, "")) {
-      printf("--- This is an BL instruction. \n");
+    if(!strcmp(d_opcode, "10")) {
+      printf("--- This is an B instruction. \n");
       B();
       return 0;
     }
@@ -399,28 +390,28 @@ int transfer_process(char* i_) {
   //Store Byte STRB
   if(!strcmp(d_opcode, "01")) {
     printf("--- This is an STRB instruction. \n");
-    STRB(Rd, Rn, Operand2, I, S, CC);
+    STRB(Rd, Rn, Operand2);
     return 0;
   }
 
   // Load Byte LDRB
   if(!strcmp(d_opcode, "11")) {
     printf("--- This is an LDRB instruction. \n");
-    LDRB(Rd, Rn, Operand2, I, S, CC);
+    LDRB(Rd, Rn, Operand2);
     return 0;
   }
 
   //Loade Register LDR
   if(!strcmp(d_opcode, "10")) {
     printf("--- This is an LDR instruction. \n");
-    LDR(Rd, Rn, Operand2, I, S, CC);
+    LDR(Rd, Rn, Operand2);
     return 0;
   }
 
   //Store Register STR
   if(!strcmp(d_opcode, "00") {
     printf("--- This is an STR instruction. \n");
-    STR(Rd, Rn, Operand2, I, S, CC);
+    STR(Rd, Rn, Operand2);
     return 0;
   }
   return 1;
