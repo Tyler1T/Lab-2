@@ -214,7 +214,7 @@ int ADC (int Rd, int Rn, int Operand2, int I, int S, int CC) {
 
 }
 int AND (char* i_);
-int ASR (char* i_);
+int ASR (int Rd, int Rn, int imm5);
 int B (char* i_);
 int BIC (char* i_);
 int BL (char* i_);
