@@ -18,10 +18,11 @@
 #define C_NXT ( (NEXT_STATE.CPSR>>29) & 0x00000001 )
 #define V_NXT ( (NEXT_STATE.CPSR>>28) & 0x00000001 )
 
-#define N_N 0x80000000
-#define Z_N 0x40000000
+
+#define N_N 0x80000000 // Negative
+#define Z_N 0x40000000 // Zero
 #define C_N 0x20000000 // Carry
-#define V_N 0x10000000
+#define V_N 0x10000000 // Overflow
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -131,6 +132,10 @@ int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
       NEXT_STATE.CPSR |= Z_N;
     if(cur > 0xffffffff)
       NEXT_STATE.CPSR |= V_N;
+
+
+    // Need to add carry and differeniate it from overflow
+    if(cur )
   }
   return 0;
 
@@ -294,34 +299,33 @@ int AND (int Rd, int Rn, int Operand2, int I, int S, int CC){
     }
     return 0;
 }
-int ASR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
+int ASR (char* i_){
+  //Pseudo Code
+  /*
 
+  if immed_5 == 0
+    C Flag = Rm[31]
+    if Rm[31] == 0 then
+      Rd = 0
+    else
+      Rd = 0xFFFFFFFF
+  else
+    C Flag = Rm[immed_5 - 1]
+    Rd = Rm Arithmetic_Shift_Right immed_5
+  N Flag = Rd[31]
+  Z Flag = if Rd == 0 then 1 else 0
+  V Flag = unaffected
 
+  */
+
+  if()
 }
-
-
-int BIC (int Rd, int Rn, int Operand2, int I, int S, int CC){
-
-
-
-}
-
-
-int CMN (int Rd, int Rn, int Operand2, int I, int S, int CC){
-
-
-
-}
-
-
-int CMP (int Rd, int Rn, int Operand2, int I, int S, int CC){
-
-
-
-}
-
-
+int B (char* i_);
+int BIC (char* i_);
+int BL (char* i_);
+int CMN (char* i_);
+int CMP (char* i_);
 int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
       int cur = 0;
@@ -421,7 +425,6 @@ int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
       return 0;
 }
 
-
 int LDR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 
@@ -462,7 +465,6 @@ int MVN (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 
 }
-
 
 int ORR (int Rd, int Rn, int Operand2, int I, int S, int CC){
     int cur = 0;
@@ -573,6 +575,7 @@ int STRB (int Rd, int Rn, int Operand2, int I, int S, int CC){
 }
 
 
+
 int SUB (int Rd, int Rn, int Operand2, int I, int S, int CC) {
 
   int cur = 0;
@@ -650,6 +653,7 @@ int B (char* i_);
 int BL (char* i_);
 int MLA (char* i_);
 int MUL (char* i_);
+
 int SWI (char* i_){return 0;}
 
 #endif
