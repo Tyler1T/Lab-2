@@ -18,6 +18,7 @@
 #define C_NXT ( (NEXT_STATE.CPSR>>29) & 0x00000001 )
 #define V_NXT ( (NEXT_STATE.CPSR>>28) & 0x00000001 )
 
+
 #define N_N 0x80000000 // Negative
 #define Z_N 0x40000000 // Zero
 #define C_N 0x20000000 // Carry
@@ -131,6 +132,7 @@ int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
       NEXT_STATE.CPSR |= Z_N;
     if(cur > 0xffffffff)
       NEXT_STATE.CPSR |= V_N;
+
 
     // Need to add carry and differeniate it from overflow
     if(cur )
@@ -297,6 +299,7 @@ int AND (int Rd, int Rn, int Operand2, int I, int S, int CC){
     }
     return 0;
 }
+
 int ASR (char* i_){
   //Pseudo Code
   /*
@@ -421,14 +424,48 @@ int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
       }
       return 0;
 }
-int LDR (char* i_);
-int LDRB (char* i_);
-int LSL (char* i_);
-int LSR (char* i_);
-int MLA (char* i_);
-int MOV (char* i_);
-int MUL (char* i_);
-int MVN (char* i_);
+
+int LDR (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
+
+
+}
+
+
+int LDRB (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
+
+
+}
+
+
+int LSL (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
+
+
+}
+
+
+int LSR (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
+
+
+}
+
+
+int MOV (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
+
+
+}
+
+
+int MVN (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
+
+
+}
+
 int ORR (int Rd, int Rn, int Operand2, int I, int S, int CC){
     int cur = 0;
 
@@ -508,10 +545,37 @@ int ORR (int Rd, int Rn, int Operand2, int I, int S, int CC){
     }
     return 0;
 }
-int ROR (char* i_);
-int SBC (char* i_);
-int STR (char* i_);
-int STRB (char* i_);
+
+
+int ROR (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
+
+
+}
+
+
+int SBC (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
+
+
+}
+
+
+int STR (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
+
+
+}
+
+
+int STRB (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
+
+
+}
+
+
+
 int SUB (int Rd, int Rn, int Operand2, int I, int S, int CC) {
 
   int cur = 0;
@@ -570,8 +634,26 @@ int SUB (int Rd, int Rn, int Operand2, int I, int S, int CC) {
   }
   return 0;
 }
-int TEQ (char* i_);
-int TST (char* i_);
+
+
+int TEQ (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
+
+
+}
+
+
+int TST (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
+
+
+}
+
+int B (char* i_);
+int BL (char* i_);
+int MLA (char* i_);
+int MUL (char* i_);
+
 int SWI (char* i_){return 0;}
 
 #endif

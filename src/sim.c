@@ -135,7 +135,6 @@ int data_process(char* i_) {
     return 0;
   }
 
-  /* Add other data instructions here */
 
   //Subtraction command SUB
   if(!strcmp(d_opcode,"0010")) {
@@ -144,12 +143,14 @@ int data_process(char* i_) {
     return 0;
   }
 
+
   //Reverse subtraction command RSB
   if(!strcmp(d_opcode,"0011")) {
     printf("--- This is an RSB instruction. \n");
     RSB(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
+
 
   //Binary or command ORR
   if(!strcmp(d_opcode,"1100")) {
@@ -190,6 +191,7 @@ int data_process(char* i_) {
     return 0;
   }
 
+
   //Logical Shift Right LSR
   if(!strcmp(d_opcode, "1101")) {
     printf("--- This is an LSR instruction. \n");
@@ -205,13 +207,13 @@ int data_process(char* i_) {
     return 0;
   }
 
+
   //Move MOV
   if(!strcmp(d_opcode, "1101")) {
     printf("--- This is an MOV instruction. \n");
     MOV(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
-
 
 
   //Arithmetic Shift Right ASR
@@ -221,12 +223,14 @@ int data_process(char* i_) {
     return 0;
   }
 
+
   //Bitwise Exclusive OR (XOR)
   if(!strcmp(d_opcode, "0001")) {
     printf("--- This is an EOR instruction. \n");
     EOR(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
+
 
   //Bitwise NOT MVN
   if(!strcmp(d_opcode, "1111")) {
@@ -235,17 +239,13 @@ int data_process(char* i_) {
     return 0;
   }
 
-  //Branch B
-  	//Code Here
-
-  //End Code
-
   //Test Equivalence TEQ
   if(!strcmp(d_opcode, "1001")) {
     printf("--- This is an TEQ instruction. \n");
     TEQ(Rd, Rn, Operand2 I, S, CC);
     return 0;
   }
+
 
   //Bitwise Clear BIC
   if(!strcmp(d_opcode, "1110")) {
@@ -254,14 +254,13 @@ int data_process(char* i_) {
     return 0;
   }
 
-
-
   //Rotate Right ROR
   if(!strcmp(d_opcode, "1101")) {
     printf("--- This is an ROR instruction. \n");
     ROR(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
+
 
   //Test TST
   if(!strcmp(d_opcode, "1000")) {
@@ -308,6 +307,27 @@ int branch_process(char* i_) {
   printf("\n");
 
   /* Add branch instructions here */
+
+    //Branch with Link BL
+    if(!strcmp(d_opcode, "")) {
+      printf("--- This is an BL instruction. \n");
+      BL();
+      return 0;
+    }
+
+    //Branch B
+    if(!strcmp(d_opcode, "")) {
+      printf("--- This is an BL instruction. \n");
+      B();
+      return 0;
+    }
+
+    //Software Interrupt SWI
+    if(!strcmp(d_opcode, "")) {
+      printf("--- This is an SWI instruction. \n");
+      SWI();
+      return 0;
+    }
 
   return 1;
 
@@ -403,8 +423,6 @@ int transfer_process(char* i_) {
     STR(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
-
-
   return 1;
 
 }
