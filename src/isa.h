@@ -130,12 +130,10 @@ int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
       NEXT_STATE.CPSR |= N_N;
     if (cur == 0)
       NEXT_STATE.CPSR |= Z_N;
-    if(cur > 0xffffffff)
+    if(cur > 0xffffffff){
       NEXT_STATE.CPSR |= V_N;
-
-
-    // Need to add carry and differeniate it from overflow
-    if(cur )
+      NEXT_STATE.CPSR |= C_N;
+    }
   }
   return 0;
 
