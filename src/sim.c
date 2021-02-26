@@ -278,14 +278,14 @@ int branch_process(char* i_) {
   /* Add branch instructions here */
 
     //Branch with Link BL
-    if((i_[7] == '0') {
+    if((i_[7] == '0')) {
       printf("--- This is an B instruction. \n");
       B();
       return 0;
     }
 
     //Branch B
-    if((i_[7] == '1') {
+    if((i_[7] == '1')) {
       printf("--- This is an BL instruction. \n");
       BL();
       return 0;
@@ -333,7 +333,7 @@ int transfer_process(char* i_) {
 
 
   // Load Byte LDRB
-  if(!strcmp((i_[9] == '1') && (i_[11] == '1')) {
+  if((i_[9] == '1') && (i_[11] == '1')) {
     printf("--- This is an LDRB instruction. \n");
     LDRB(Rd, Rn, Operand2);
     return 0;
