@@ -278,23 +278,16 @@ int branch_process(char* i_) {
   /* Add branch instructions here */
 
     //Branch with Link BL
-    if(!strcmp(d_opcode, "")) {
-      printf("--- This is an BL instruction. \n");
-      BL();
-      return 0;
-    }
-
-    //Branch B
-    if(!strcmp(d_opcode, "")) {
-      printf("--- This is an BL instruction. \n");
+    if((i_[7] == '0') {
+      printf("--- This is an B instruction. \n");
       B();
       return 0;
     }
 
-    //Software Interrupt SWI
-    if(!strcmp(d_opcode, "")) {
-      printf("--- This is an SWI instruction. \n");
-      SWI();
+    //Branch B
+    if((i_[7] == '1') {
+      printf("--- This is an BL instruction. \n");
+      BL();
       return 0;
     }
 
@@ -318,30 +311,31 @@ int transfer_process(char* i_) {
   /* Add memory instructions here */
 
   //Store Register STR
-  if(!strcmp(d_opcode, "00") {
+  if((i_[9] == '0') && (i_[11] == '0')) {
     printf("--- This is an STR instruction. \n");
-    STR(Rd, Rn, Operand2, I, S, CC);
-    return 0;
-  }
-
-  //Store Byte STRB
-  if(!strcmp(d_opcode, "01")) {
-    printf("--- This is an STRB instruction. \n");
-    STRB(Rd, Rn, Operand2, I, S, CC);
+    STR(Rd, Rn, Operand2);
     return 0;
   }
 
   //Loade Register LDR
-  if(!strcmp(d_opcode, "10")) {
+  if((i_[9] == '0') && (i_[11] == '1')) {
     printf("--- This is an LDR instruction. \n");
-    LDR(Rd, Rn, Operand2, I, S, CC);
+    LDR(Rd, Rn, Operand2);
     return 0;
   }
 
+  //Store Byte STRB
+  if((i_[9] == '1') && (i_[11] == '0')) {
+    printf("--- This is an STRB instruction. \n");
+    STRB(Rd, Rn, Operand2);
+    return 0;
+  }
+
+
   // Load Byte LDRB
-  if(!strcmp(d_opcode, "11")) {
+  if(!strcmp((i_[9] == '1') && (i_[11] == '1')) {
     printf("--- This is an LDRB instruction. \n");
-    LDRB(Rd, Rn, Operand2, I, S, CC);
+    LDRB(Rd, Rn, Operand2);
     return 0;
   }
 

@@ -130,12 +130,10 @@ int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
       NEXT_STATE.CPSR |= N_N;
     if (cur == 0)
       NEXT_STATE.CPSR |= Z_N;
-    if(cur > 0xffffffff)
+    if(cur > 0xffffffff){
       NEXT_STATE.CPSR |= V_N;
-
-
-    // Need to add carry and differeniate it from overflow
-    if(cur )
+      NEXT_STATE.CPSR |= C_N;
+    }
   }
   return 0;
 
@@ -164,33 +162,34 @@ int ADC (int Rd, int Rn, int Operand2, int I, int S, int CC) {
       //switch determines how Rm will be shifted
       switch (sh) {
         case 0: cur = CURRENT_STATE.REGS[Rn] +
-  	     (CURRENT_STATE.REGS[Rm] << shamt5);
+  	     (CURRENT_STATE.REGS[Rm] << shamt5) + C_CUR;
   	    break;
         case 1: cur = CURRENT_STATE.REGS[Rn] +
-  	     (CURRENT_STATE.REGS[Rm] >> shamt5);
+  	     (CURRENT_STATE.REGS[Rm] >> shamt5) + C_CUR;
   	    break;
         case 2: cur = CURRENT_STATE.REGS[Rn] +
-  	     (CURRENT_STATE.REGS[Rm] >> shamt5);
+  	     (CURRENT_STATE.REGS[Rm] >> shamt5) + C_CUR;
     	  break;
         case 3: cur = CURRENT_STATE.REGS[Rn] +
 	       ((CURRENT_STATE.REGS[Rm] >> shamt5) |
-               (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
+               (CURRENT_STATE.REGS[Rm] << (32 - shamt5))) + C_CUR;
 	      break;
       }else
         //switch determines how Rm will be shifted
         switch (sh) {
           case 0: cur = CURRENT_STATE.REGS[Rn] +
-  	       (CURRENT_STATE.REGS[Rm] << CURRENT_STATE.REGS[Rs]);
+  	       (CURRENT_STATE.REGS[Rm] << CURRENT_STATE.REGS[Rs]) + C_CUR;
   	      break;
           case 1: cur = CURRENT_STATE.REGS[Rn] +
-  	       (CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]);
+  	       (CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) + C_CUR;
   	      break;
           case 2: cur = CURRENT_STATE.REGS[Rn] +
-  	       (CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]);
+  	       (CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) + C_CUR;
   	      break;
           case 3: cur = CURRENT_STATE.REGS[Rn] +
   	       ((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
-                 (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs])));
+                 (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs])))
+                  + C_CUR ;
   	      break;
         }
   }
@@ -203,7 +202,7 @@ int ADC (int Rd, int Rn, int Operand2, int I, int S, int CC) {
 
     int rotate = Operand2 >> 8;
     int Imm = Operand2 & 0x000000FF;
-    cur = CURRENT_STATE.REGS[Rn] + (Imm>>2*rotate|(Imm<<(32-2*rotate)));
+    cur = CURRENT_STATE.REGS[Rn] + (Imm>>2*rotate|(Imm<<(32-2*rotate))) + C_CUR;
   }
   NEXT_STATE.REGS[Rd] = cur;
 
@@ -321,11 +320,19 @@ int ASR (char* i_){
 
   if()
 }
-int B (char* i_);
-int BIC (char* i_);
-int BL (char* i_);
-int CMN (char* i_);
-int CMP (char* i_);
+
+int BIC (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
+}
+
+int CMN (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
+}
+
+int CMP (int Rd, int Rn, int Operand2, int I, int S, int CC){
+
+}
+
 int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
       int cur = 0;
