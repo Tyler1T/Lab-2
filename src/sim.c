@@ -81,7 +81,7 @@ int data_process(char* i_) {
     0010 = SUB - Rd:= Op1 - Op2   DONE
     0011 = RSB - Rd:= Op2 - Op1   DONE
     0100 = ADD - Rd:= Op1 + Op2   DONE
-    0101 = ADC - Rd:= Op1 + Op2 + C
+    0101 = ADC - Rd:= Op1 + Op2 + C DONE
     0110 = SBC - Rd:= Op1 - Op2 + C - 1
     0111 = RSC - Rd:= Op2 - Op1 + C - 1
     1000 = TST - set condition codes on Op1 AND Op2
@@ -113,15 +113,17 @@ int data_process(char* i_) {
     rn[i] = i_[12+i];
     rd[i] = i_[16+i];
   }
+
   for(int i = 0; i < 12; i++) {
     operand2[i] = i_[20+i];
   }
+
   int Rn = bchar_to_int(rn);
   int Rd = bchar_to_int(rd);
   int Operand2 = bchar_to_int(operand2);
   int I = i_[6]-'0';
   int S = i_[11]-'0';
-  int CC = bchar_to_int(d_cond);
+  int CC = bchar_to_int(d_cond);  //CC stand for condition code
   printf("Opcode = %s\n Rn = %d\n Rd = %d\n Operand2 = %s\n I = %d\n S = %d\n COND = %s\n", d_opcode, Rn, Rd, byte_to_binary12(Operand2), I, S, byte_to_binary4(CC));
   printf("\n");
 
@@ -209,7 +211,8 @@ int data_process(char* i_) {
   //Move MOV
   if(!strcmp(d_opcode, "1101")) {
     printf("--- This is an MOV instruction. \n");
-    MOV(Rd, Rn, Operand2, I, S, CC);
+    MOV(Rd, Operand2, I, S);
+
     return 0;
   }
 
@@ -237,7 +240,6 @@ int data_process(char* i_) {
     return 0;
   }
 
-
   //Test Equivalence TEQ
   if(!strcmp(d_opcode, "1001")) {
     printf("--- This is an TEQ instruction. \n");
@@ -252,7 +254,6 @@ int data_process(char* i_) {
     MVN(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
-
 
   //Rotate Right ROR
   if(!strcmp(d_opcode, "1101")) {
@@ -275,12 +276,35 @@ int data_process(char* i_) {
 int branch_process(char* i_) {
 
   /* This function execute branch instruction */
+
+  //the 4 and 5 bits are operation and they are 10 for branch operations
+
+  //funct code is 2 bits long plus a termination for the array
+  char func[3];
+  func[0] = 1;
+  func[1] = i_[7] - '0';
+  func[2] = '\0';
+
+
+  char imm[25]; imm[24] = '\0';
+
+  //setting imm array
+  for(int i = 0; i < 24; i++) {
+    imm[i] = i_[8+i];
+  }
+
+  int funct = bchar_to_int(func);
+  int imm24 = bchar_to_int(imm);
+  printf("imm24 = %d\n BL or B = %s\n", imm24, funct);
+  printf("\n");
+
   /* Add branch instructions here */
 
     //Branch with Link BL
     if((i_[7] == '0')) {
       printf("--- This is an B instruction. \n");
       B();
+
       return 0;
     }
 
@@ -288,6 +312,7 @@ int branch_process(char* i_) {
     if((i_[7] == '1')) {
       printf("--- This is an BL instruction. \n");
       BL();
+
       return 0;
     }
 
@@ -308,7 +333,56 @@ int mul_process(char* i_) {
 int transfer_process(char* i_) {
 
   /* This function execute memory instruction */
-  /* Add memory instructions here */
+
+
+  //condition code is 4 bits long plus a terminaiton for the array
+  char d_cond[5];
+  d_cond[0] = i_[0];
+  d_cond[1] = i_[1];
+  d_cond[2] = i_[2];
+  d_cond[3] = i_[3];
+  d_cond[4] = '\0';
+
+  //the 4 and 5 bits are operation and they are 01 for memory operations
+
+  //opcode code is 4 bits long plus a termination for the array
+  char d_opcode[5];
+  d_opcode[0] = i_[7];
+  d_opcode[1] = i_[8];
+  d_opcode[2] = i_[9];
+  d_opcode[3] = i_[10];
+  d_opcode[5] = '\0';
+
+  char rn[5]; rn[4] = '\0';
+  char rd[5]; rd[4] = '\0';
+  char func[7]; func[6] = '\0';
+  char operand2[13]; operand2[12] = '\0';
+
+  //setting rn, rd, func, and operand2 arrays
+  for(int i = 0; i < 6; i++) {
+    func[i] = i_[6+i];
+  }
+  for(int i = 0; i < 4; i++) {
+    rn[i] = i_[12+i];
+    rd[i] = i_[16+i];
+  }
+  for(int i = 0; i < 12; i++) {
+    operand2[i] = i_[20+i];
+  }
+
+  int CC = bchar_to_int(d_cond);
+  int func = bchar_to_int(func);
+  int Rn = bchar_to_int(rn);
+  int Rd = bchar_to_int(rd);
+  int Operand2 = bchar_to_int(operand2);
+
+  printf("CC = %s\n Rn = %d\n Rd = %d\n Operand2 = %s\n IPUBWL = %s\n", CC, Rn, Rd, byte_to_binary12(Operand2), func);
+  printf("\n");
+
+
+  /* Add memory instructions here, interpretting the opcodes
+      and call a specific command in the ISA
+  */
 
   //Store Register STR
   if((i_[9] == '0') && (i_[11] == '0')) {
@@ -317,7 +391,7 @@ int transfer_process(char* i_) {
     return 0;
   }
 
-  //Loade Register LDR
+  //Load Register LDR
   if((i_[9] == '0') && (i_[11] == '1')) {
     printf("--- This is an LDR instruction. \n");
     LDR(Rd, Rn, Operand2);
@@ -336,9 +410,9 @@ int transfer_process(char* i_) {
   if((i_[9] == '1') && (i_[11] == '1')) {
     printf("--- This is an LDRB instruction. \n");
     LDRB(Rd, Rn, Operand2);
+
     return 0;
   }
-
   return 1;
 
 }
