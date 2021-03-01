@@ -145,7 +145,8 @@ int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
 
     }
   }
-  return 0;} //DONE
+  return 0;
+}} //DONE
 int ADC (int Rd, int Rn, int Operand2, int I, int S, int CC) {
 
   int cur = 0;
@@ -330,41 +331,75 @@ int AND (int Rd, int Rn, int Operand2, int I, int S, int CC){
   }
   return 0;} //DONE
 int ASR (char* i_){
-  //Pseudo Code
+  int cur = 0;
+
+  //If I = 0 then the processor has to go get Operand2 from memory
+  if(I == 0) {
+    /*
+      These integers apply a mask to different parts of the operand in order to
+      look at specific values
+    */
+    int sh = (Operand2 & 0x00000060) >> 5;
+    int shamt5 = (Operand2 & 0x00000F80) >> 7;
+    int bit4 = (Operand2 & 0x00000010) >> 4;
+    int Rm = Operand2 & 0x0000000F;
+    int Rs = (Operand2 & 0x00000F00) >> 8;
+
+    /*This IF checks bit 4 is 1 or 0
+        1 means that this is a Register
+        0 means that this is a Register-shifted Register
+    */
+    if (bit4 == 0)
+      //switch determines how Rm will be shifted
+      switch (sh) {
+        case 0: cur = CURRENT_STATE.REGS[Rm] << shamt5;
+        break;
+        case 1: cur = CURRENT_STATE.REGS[Rm] >> shamt5;
+        break;
+        case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+                  cur = CURRENT_STATE.REGS[Rm] >> shamt5;
+                else{
+                  for(int i = 0; i < shamt5; i++)
+                        cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                }
+        break;
+        case 3: cur = ((CURRENT_STATE.REGS[Rm] >> shamt5) |
+               (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
+        break;
+      }else
+        //switch determines how Rm will be shifted
+        switch (sh) {
+          case 0: cur = CURRENT_STATE.REGS[Rm] << CURRENT_STATE.REGS[Rs];
+          break;
+          case 1: cur = CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs];
+          break;
+          case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+                    cur = CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs];
+                  else{
+                    for(int i = 0; i < CURRENT_STATE.REGS[Rs]; i++)
+                          cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                  }
+          break;
+          case 3: cur = (CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
+                 (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs]));
+          break;
+        }
+  }
+
+  NEXT_STATE.REGS[Rd] = cur;
+
   /*
-
-  if immed_5 == 0
-    C Flag = Rm[31]
-    if Rm[31] == 0 then
-      Rd = 0
-    else
-      Rd = 0xFFFFFFFF
-  else
-    C Flag = Rm[immed_5 - 1]
-    Rd = Rm Arithmetic_Shift_Right immed_5
-  N Flag = Rd[31]
-  Z Flag = if Rd == 0 then 1 else 0
-  V Flag = unaffected
-
-  */
-
-  if()
-
-
-
-
-  /*
-    If S = 1 then set the condition flags
+  If S = 1 then set the condition flags
   */
   if (S == 1) {
-    if (cur < 0)
-      NEXT_STATE.CPSR |= N_N;
-    if (cur == 0)
-      NEXT_STATE.CPSR |= Z_N;
-    if(cur > 0xffffffff)
-      NEXT_STATE.CPSR |= C_N;
-}
-return 0;
+  if (cur < 0)
+    NEXT_STATE.CPSR |= N_N;
+  if (cur == 0)
+    NEXT_STATE.CPSR |= Z_N;
+  if(cur > 0xffffffff)
+    NEXT_STATE.CPSR |= C_N;
+  }
+  return 0;
 
 
 }
@@ -808,7 +843,7 @@ int LDRB (int Rd, int Rn, int Operand2, int I){
     return 0;
 
 
-}
+} //DONE
 int LSL (int Rd, int Rn, int Operand2, int I, int S){
 
     int cur = 0;
@@ -880,10 +915,77 @@ int LSL (int Rd, int Rn, int Operand2, int I, int S){
       NEXT_STATE.CPSR |= C_N;
   }
   return 0;
-
-
 } //DONE
-int LSR (int Rd, int Rn, int Operand2, int I, int S, int CC){
+int LSR (int Rd, int Rn, int Operand2, int I, int S){
+  int cur = 0;
+
+  //If I = 0 then the processor has to go get Operand2 from memory
+  if(I == 0) {
+    /*
+      These integers apply a mask to different parts of the operand in order to
+      look at specific values
+    */
+    int sh = (Operand2 & 0x00000060) >> 5;
+    int shamt5 = (Operand2 & 0x00000F80) >> 7;
+    int bit4 = (Operand2 & 0x00000010) >> 4;
+    int Rm = Operand2 & 0x0000000F;
+    int Rs = (Operand2 & 0x00000F00) >> 8;
+
+    /*This IF checks bit 4 is 1 or 0
+        1 means that this is a Register
+        0 means that this is a Register-shifted Register
+    */
+    if (bit4 == 0)
+      //switch determines how Rm will be shifted
+      switch (sh) {
+        case 0: cur = CURRENT_STATE.REGS[Rm] << shamt5;
+        break;
+        case 1: cur = CURRENT_STATE.REGS[Rm] >> shamt5;
+        break;
+        case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+                  cur = CURRENT_STATE.REGS[Rm] >> shamt5;
+                else{
+                  for(int i = 0; i < shamt5; i++)
+                        cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                }
+        break;
+        case 3: cur = ((CURRENT_STATE.REGS[Rm] >> shamt5) |
+               (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
+        break;
+      }else
+        //switch determines how Rm will be shifted
+        switch (sh) {
+          case 0: cur = CURRENT_STATE.REGS[Rm] << CURRENT_STATE.REGS[Rs];
+          break;
+          case 1: cur = CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs];
+          break;
+          case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+                    cur = CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs];
+                  else{
+                    for(int i = 0; i < CURRENT_STATE.REGS[Rs]; i++)
+                          cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                  }
+          break;
+          case 3: cur = (CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
+                 (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs]));
+          break;
+        }
+  }
+
+  NEXT_STATE.REGS[Rd] = cur;
+
+  /*
+  If S = 1 then set the condition flags
+  */
+  if (S == 1) {
+  if (cur < 0)
+    NEXT_STATE.CPSR |= N_N;
+  if (cur == 0)
+    NEXT_STATE.CPSR |= Z_N;
+  if(cur > 0xffffffff)
+    NEXT_STATE.CPSR |= C_N;
+  }
+  return 0;
 
 }
 int MOV (int Rd, int Operand2, int I, int S){
@@ -1006,22 +1108,76 @@ int ORR (int Rd, int Rn, int Operand2, int I, int S, int CC){
     }
     return 0;} //DONE
 int ROR (int Rd, int Rn, int Operand2, int I, int S, int CC){
+  int cur = 0;
 
+  //If I = 0 then the processor has to go get Operand2 from memory
+  if(I == 0) {
+    /*
+      These integers apply a mask to different parts of the operand in order to
+      look at specific values
+    */
+    int sh = (Operand2 & 0x00000060) >> 5;
+    int shamt5 = (Operand2 & 0x00000F80) >> 7;
+    int bit4 = (Operand2 & 0x00000010) >> 4;
+    int Rm = Operand2 & 0x0000000F;
+    int Rs = (Operand2 & 0x00000F00) >> 8;
 
+    /*This IF checks bit 4 is 1 or 0
+        1 means that this is a Register
+        0 means that this is a Register-shifted Register
+    */
+    if (bit4 == 0)
+      //switch determines how Rm will be shifted
+      switch (sh) {
+        case 0: cur = CURRENT_STATE.REGS[Rm] << shamt5;
+        break;
+        case 1: cur = CURRENT_STATE.REGS[Rm] >> shamt5;
+        break;
+        case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+                  cur = CURRENT_STATE.REGS[Rm] >> shamt5;
+                else{
+                  for(int i = 0; i < shamt5; i++)
+                        cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                }
+        break;
+        case 3: cur = ((CURRENT_STATE.REGS[Rm] >> shamt5) |
+               (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
+        break;
+      }else
+        //switch determines how Rm will be shifted
+        switch (sh) {
+          case 0: cur = CURRENT_STATE.REGS[Rm] << CURRENT_STATE.REGS[Rs];
+          break;
+          case 1: cur = CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs];
+          break;
+          case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+                    cur = CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs];
+                  else{
+                    for(int i = 0; i < CURRENT_STATE.REGS[Rs]; i++)
+                          cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                  }
+          break;
+          case 3: cur = (CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
+                 (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs]));
+          break;
+        }
+  }
 
+  NEXT_STATE.REGS[Rd] = cur;
 
   /*
-    If S = 1 then set the condition flags
+  If S = 1 then set the condition flags
   */
   if (S == 1) {
-    if (cur < 0)
-      NEXT_STATE.CPSR |= N_N;
-    if (cur == 0)
-      NEXT_STATE.CPSR |= Z_N;
-    if(cur > 0xffffffff)
-      NEXT_STATE.CPSR |= C_N;
+  if (cur < 0)
+    NEXT_STATE.CPSR |= N_N;
+  if (cur == 0)
+    NEXT_STATE.CPSR |= Z_N;
+  if(cur > 0xffffffff)
+    NEXT_STATE.CPSR |= C_N;
   }
   return 0;
+
 
 }
 
