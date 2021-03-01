@@ -1019,7 +1019,10 @@ int TST (int Rd, int Rn, int Operand2, int I, int S, int CC){
 int B (int imm24){
   CURRENT_STATE.REGS[15] = (CURRENT_STATE.REGS[15] + 8) + imm24 << 2;
 }
-int BL (char* i_);
+int BL (int imm24){
+  CURRENT_STATE.REGS[14] = (CURRENT_STATE.REGS[15] + 8) - 4;
+  CURRENT_STATE.REGS[15] = (CURRENT_STATE.REGS[15] + 8) + imm24 << 2;
+}
 
 int MLA (char* i_);
 int MUL (char* i_);
