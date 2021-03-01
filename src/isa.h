@@ -172,15 +172,16 @@ int ADC (int Rd, int Rn, int Operand2, int I, int S, int CC) {
         case 0: cur = CURRENT_STATE.REGS[Rn] +
   	     (CURRENT_STATE.REGS[Rm] << shamt5) + C_CUR;
   	    break;
-        case 1: cur = CURRENT_STATE.REGS[Rn] +
+        case 1: cur = c
   	     (CURRENT_STATE.REGS[Rm] >> shamt5) + C_CUR;
   	    break;
-
         case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
-                  cur = CURRENT_STATE.REGS[Rm] >> shamt5;
+                  cur = CURRENT_STATE.REGS[Rn] +
+                    CURRENT_STATE.REGS[Rm] >> shamt5 + C_CUR;
                 else{
                   for(int i = 0; i < shamt5; i++)
-                        cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                    cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                  cur = cur + CURRENT_STATE.REGS[Rn] + C_CUR;
                 }
     	  break;
         case 3: cur = CURRENT_STATE.REGS[Rn] +
@@ -196,12 +197,12 @@ int ADC (int Rd, int Rn, int Operand2, int I, int S, int CC) {
           case 1: cur = CURRENT_STATE.REGS[Rn] +
   	       (CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) + C_CUR;
   	      break;
-
           case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
                     cur = CURRENT_STATE.REGS[Rm] >> shamt5;
                   else{
-                    for(int i = 0; i < shamt5; i++)
-                          cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                    for(int i = 0; i < CURRENT_STATE.REGS[Rs]; i++)
+                      cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                    cur = cur + CURRENT_STATE.REGS[Rn] + C_CUR;
                   }
   	      break;
           case 3: cur = CURRENT_STATE.REGS[Rn] +
@@ -269,10 +270,11 @@ int AND (int Rd, int Rn, int Operand2, int I, int S, int CC){
     	     (CURRENT_STATE.REGS[Rm] >> shamt5);
     	    break;
           case 2: cur = if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
-                    cur = CURRENT_STATE.REGS[Rm] >> shamt5;
+                    cur = (CURRENT_STATE.REGS[Rm] >> shamt5) & CURRENT_STATE.REGS[Rn];
                   else{
                     for(int i = 0; i < shamt5; i++)
-                          cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                      cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                    cur = cur & CURRENT_STATE.REGS[Rn];
                   }
       	  break;
           case 3: cur = CURRENT_STATE.REGS[Rn] &
@@ -292,7 +294,8 @@ int AND (int Rd, int Rn, int Operand2, int I, int S, int CC){
                       cur = CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs];
                     else{
                       for(int i = 0; i < CURRENT_STATE.REGS[Rs]; i++)
-                            cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                        cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                      cur = cur & CURRENT_STATE.REGS[Rn]
                     }
     	      break;
             case 3: cur = CURRENT_STATE.REGS[Rn] &
@@ -488,13 +491,25 @@ int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
               (CURRENT_STATE.REGS[Rm] >> shamt5);
               cur = nand & or;
       	    break;
-            //Need to finish cases 2 and 3
-            case 2: cur = CURRENT_STATE.REGS[Rn] &
-      	     (CURRENT_STATE.REGS[Rm] >> shamt5);
+            //Need to finish case 3
+            case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+                      cur = CURRENT_STATE.REGS[Rm] >> shamt5;
+                    else{
+                      for(int i = 0; i < shamt5; i++)
+                        cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                    }
+                    nand = !(CURRENT_STATE.REGS[Rn] & cur;
+                    or = CURRENT_STATE.REGS[Rn] | cur;
+                    cur = nand & or;
         	  break;
             case 3: cur = CURRENT_STATE.REGS[Rn] &
     	       ((CURRENT_STATE.REGS[Rm] >> shamt5) |
                    (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
+                   nand = !(CURRENT_STATE.REGS[Rn] & ((CURRENT_STATE.REGS[Rm] >> shamt5) |
+                         (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
+                   or = CURRENT_STATE.REGS[Rn] | ((CURRENT_STATE.REGS[Rm] >> shamt5) |
+                         (CURRENT_STATE.REGS[Rm] << (32 - shamt5));
+                   cur = nand & or;
     	      break;
           }else
             //switch determines how Rm will be shifted
@@ -512,12 +527,24 @@ int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
                cur= nand & or;
       	      break;
               // Need to finihs cases 2 and 3
-              case 2: cur = CURRENT_STATE.REGS[Rn] &
-      	       (CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]);
-      	      break;
+              case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+                        cur = CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs];
+                      else{
+                        for(int i = 0; i < CURRENT_STATE.REGS[Rs]; i++)
+                          cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                      }
+                      nand = !(CURRENT_STATE.REGS[Rn] & cur;
+                      or = CURRENT_STATE.REGS[Rn] | cur;
+                      cur = nand & or;
+          	  break;
               case 3: cur = CURRENT_STATE.REGS[Rn] &
       	       ((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
                      (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs])));
+                     nand = !(CURRENT_STATE.REGS[Rn] & ((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
+                           (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
+                     or = CURRENT_STATE.REGS[Rn] | ((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
+                           (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs]));
+                     cur = nand & or;
       	      break;
             }
       }
@@ -663,7 +690,6 @@ int MOV (int Rd, int Operand2, int I, int S){
   }
   return 0;
 }
-
 int MVN (int Rd, int Rn, int S){
   // Move the NOT of Rn into Rd
   int cur = NEXT_STATE.REGS[Rd] = ~CURRENT_STATE.REGS[Rn];
@@ -683,7 +709,6 @@ int MVN (int Rd, int Rn, int S){
   }
   return 0;
 }
-
 int ORR (int Rd, int Rn, int Operand2, int I, int S, int CC){
     int cur = 0;
 
@@ -796,22 +821,72 @@ int ROR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 int SBC (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
+    int cur = 0;
+    if(I == 0) {
+      int sh = (Operand2 & 0x00000060) >> 5;
+      int shamt5 = (Operand2 & 0x00000F80) >> 7;
+      int bit4 = (Operand2 & 0x00000010) >> 4;
+      int Rm = Operand2 & 0x0000000F;
+      int Rs = (Operand2 & 0x00000F00) >> 8;
+      if (bit4 == 0)
+        switch (sh) {
+        case 0: cur = CURRENT_STATE.REGS[Rn] -
+  	  (CURRENT_STATE.REGS[Rm] << shamt5);
+  	  break;
+        case 1: cur = CURRENT_STATE.REGS[Rn] -
+  	  (CURRENT_STATE.REGS[Rm] >> shamt5);
+  	  break;
+        case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+                  cur = CURRENT_STATE.REGS[Rm] >> shamt5;
+                else{
+                  for(int i = 0; i < shamt5; i++)
+                        cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                }
+      	  break;
+        case 3: cur = CURRENT_STATE.REGS[Rn] -
+  	      ((CURRENT_STATE.REGS[Rm] >> shamt5) |
+                 (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
+  	  break;
+        }
+      else
+        switch (sh) {
+        case 0: cur = CURRENT_STATE.REGS[Rn] -
+  	  (CURRENT_STATE.REGS[Rm] << CURRENT_STATE.REGS[Rs]);
+  	  break;
+        case 1: cur = CURRENT_STATE.REGS[Rn] -
+  	  (CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]);
+  	  break;
+        case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+                  cur = CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs];
+                else{
+                  for(int i = 0; i < CURRENT_STATE.REGS[Rs]; i++)
+                        cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                }
+  	  break;
+        case 3: cur = CURRENT_STATE.REGS[Rn] -
+  	      ((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
+                 (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs])));
+  	  break;
+        }
+    }
+    if (I == 1) {
+      int rotate = Operand2 >> 8;
+      int Imm = Operand2 & 0x000000FF;
+      cur = CURRENT_STATE.REGS[Rn] - (Imm>>2*rotate|(Imm<<(32-2*rotate)));
+    }
+    NEXT_STATE.REGS[Rd] = cur;
 
-
-
-  /*
-    If S = 1 then set the condition flags
-  */
-  if (S == 1) {
-    if (cur < 0)
-      NEXT_STATE.CPSR |= N_N;
-    if (cur == 0)
-      NEXT_STATE.CPSR |= Z_N;
-    if(cur > 0xffffffff)
-      NEXT_STATE.CPSR |= C_N;
-      NEXT_STATE.CPSR |= V_N;
-  }
-  return 0;
+    if (S == 1) {
+      if (cur < 0)
+        NEXT_STATE.CPSR |= N_N;
+      if (cur == 0)
+        NEXT_STATE.CPSR |= Z_N;
+      if(cur > 0xFFFFFFFF){
+        NEXT_STATE.CPSR |= V_N;
+        NEXT_STATE.CPSR |= C_N;
+      }
+    }
+    return 0;
 
 }
 
