@@ -383,25 +383,25 @@ int transfer_process(char* i_) {
   /* Add memory instructions here, interpretting the opcodes
       and call a specific command in the ISA
   */
-  
+
   //Store Register STR
   if((i_[9] == '0') && (i_[11] == '0')) {
     printf("--- This is an STR instruction. \n");
-    STR(Rd, Rn, Operand2);
+    STR(Rd, Rn, Operand2, func[0]);
     return 0;
   }
 
   //Load Register LDR
   if((i_[9] == '0') && (i_[11] == '1')) {
     printf("--- This is an LDR instruction. \n");
-    LDR(Rd, Rn, Operand2);
+    LDR(Rd, Rn, Operand2, func[0]);
     return 0;
   }
 
   //Store Byte STRB
   if((i_[9] == '1') && (i_[11] == '0')) {
     printf("--- This is an STRB instruction. \n");
-    STRB(Rd, Rn, Operand2);
+    STRB(Rd, Rn, Operand2, func[0]);
     return 0;
   }
 
@@ -409,7 +409,7 @@ int transfer_process(char* i_) {
   // Load Byte LDRB
   if((i_[9] == '1') && (i_[11] == '1')) {
     printf("--- This is an LDRB instruction. \n");
-    LDRB(Rd, Rn, Operand2);
+    LDRB(Rd, Rn, Operand2, func[0]);
 
     return 0;
   }

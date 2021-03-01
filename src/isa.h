@@ -75,7 +75,7 @@ int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
         1 means that this is a Register
         0 means that this is a Register-shifted Register
     */
-    if (bit4 == 0)
+    if (bit4 == 0){
       //switch determines how Rm will be shifted
       switch (sh) {
         case 0: cur = CURRENT_STATE.REGS[Rn] +
@@ -328,8 +328,7 @@ int AND (int Rd, int Rn, int Operand2, int I, int S, int CC){
       if(cur > 0xffffffff)
         NEXT_STATE.CPSR |= C_N;
   }
-  return 0;
-} //DONE
+  return 0;} //DONE
 int ASR (char* i_){
   //Pseudo Code
   /*
@@ -618,8 +617,7 @@ int CMP (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
       }
     }
-    return 0;
-} //DONE
+    return 0;} //DONE
 int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
       int cur = 0;
@@ -742,13 +740,67 @@ int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
     }
       return 0;
 } //DONE
-int LDR (int Rd, int Rn, int Operand2, int I, int S, int CC){
+int LDR (int Rd, int Rn, int Operand2, int I){
+  int sh = (Operand2 & 0x00000060) >> 5;
+  int shamt5 = (Operand2 & 0x00000F80) >> 7;
+  int bit4 = (Operand2 & 0x00000010) >> 4;
+  int Rm = Operand2 & 0x0000000F;
+  int Rs = (Operand2 & 0x00000F00) >> 8;
 
+  if (I == 0){
+    //switch determines how Rm will be shifted
+    switch (sh) {
+      case 0: CURRENT_STATE.REGS[Rn] =
+       (CURRENT_STATE.REGS[Rm] << shamt5);
+      break;
+      case 1: CURRENT_STATE.REGS[Rn] =
+       (CURRENT_STATE.REGS[Rm] >> shamt5);
+      break;
+      case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+                cur = CURRENT_STATE.REGS[Rm] >> shamt5;
+              else{
+                for(int i = 0; i < shamt5; i++)
+                      cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+              }
+              CURRENT_STATE.REGS[Rn] = cur;
+      break;
+      case 3: CURRENT_STATE.REGS[Rn] =
+       ((CURRENT_STATE.REGS[Rm] >> shamt5) |
+             (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
+      break;
+      }
+    }else
+      //switch determines how Rm will be shifted
+      switch (sh) {
+        case 0: CURRENT_STATE.REGS[Rn] =
+         (CURRENT_STATE.REGS[Rm] << CURRENT_STATE.REGS[Rs]);
+        break;
+        case 1: CURRENT_STATE.REGS[Rn] =
+         (CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]);
+        break;
+        case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+                  cur = CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs];
+                else{
+                  for(int i = 0; i < CURRENT_STATE.REGS[Rs]; i++)
+                        cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                }
+                CURRENT_STATE.REGS[Rn] = cur;
+        break;
+        case 3: CURRENT_STATE.REGS[Rn] =
+         ((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
+               (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs])));
+        break;
+      }else{
+        CURRENT_STATE.REGS[Rn] = CURRENT_STATE.REGS[Rd];
+      }
+
+      return 0;
+  }
 
 
 
 }
-int LDRB (int Rd, int Rn, int Operand2, int I, int S, int CC){
+int LDRB (int Rd, int Rn, int Operand2, int I){
 
 
 
@@ -1043,12 +1095,12 @@ int SBC (int Rd, int Rn, int Operand2, int I, int S, int CC){
     return 0;
 
 } //DONE
-int STR (int Rd, int Rn, int Operand2, int I, int S, int CC){
+int STR (int Rd, int Rn, int Operand2, int I){
 
 
 
 }
-int STRB (int Rd, int Rn, int Operand2, int I, int S, int CC){
+int STRB (int Rd, int Rn, int Operand2, int I){
 
 
 
@@ -1209,8 +1261,6 @@ int TEQ (int Rd, int Rn, int Operand2, int I, int S, int CC){
   }
   return 0;
 } //DONE
-
-
 int TST (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
       int cur = 0;
@@ -1300,7 +1350,6 @@ int TST (int Rd, int Rn, int Operand2, int I, int S, int CC){
     }
     return 0;
 } //DONE
-
 int B (int imm24){
   CURRENT_STATE.REGS[15] = (CURRENT_STATE.REGS[15] + 8) + imm24 << 2;
 } // DONE
