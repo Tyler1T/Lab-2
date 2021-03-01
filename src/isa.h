@@ -146,7 +146,6 @@ int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
     }
   }
   return 0;
-
 } //DONE
 int ADC (int Rd, int Rn, int Operand2, int I, int S, int CC) {
 
@@ -462,40 +461,75 @@ int BIC (int Rd, int Rn, int Operand2, int S){
   }
   return 0;
 } //DONE
-
 int CMN (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
-
-
-
-  if immed_5 == 0
-    C Flag = Rm[31]
-    if Rm[31] == 0 then
-      Rd = 0
-    else
-      Rd = 0xFFFFFFFF
-  else
-    C Flag = Rm[immed_5 - 1]
-    Rd = Rm Arithmetic_Shift_Right immed_5
-  N Flag = Rd[31]
-  Z Flag = if Rd == 0 then 1 else 0
-  V Flag = unaffected
-
-  */
-
-  /*
-    If S = 1 then set the condition flags
-  */
-  if (S == 1) {
-    if (cur < 0)
-      NEXT_STATE.CPSR |= N_N;
-    if (cur == 0)
-      NEXT_STATE.CPSR |= Z_N;
-    if(cur > 0xffffffff)
-      NEXT_STATE.CPSR |= V_N;
-      NEXT_STATE.CPSR |= C_N;
-  }
-  return 0;
+    int cur = 0;
+    if(I == 0) {
+      int sh = (Operand2 & 0x00000060) >> 5;
+      int shamt5 = (Operand2 & 0x00000F80) >> 7;
+      int bit4 = (Operand2 & 0x00000010) >> 4;
+      int Rm = Operand2 & 0x0000000F;
+      int Rs = (Operand2 & 0x00000F00) >> 8;
+      if (bit4 == 0)
+        switch (sh) {
+        case 0: cur = CURRENT_STATE.REGS[Rn] -
+  	  (CURRENT_STATE.REGS[Rm] << shamt5);
+  	  break;
+        case 1: cur = CURRENT_STATE.REGS[Rn] -
+  	  (CURRENT_STATE.REGS[Rm] >> shamt5);
+  	  break;
+        case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+                  cur = CURRENT_STATE.REGS[Rm] >> shamt5;
+                else{
+                  for(int i = 0; i < shamt5; i++)
+                        cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                }
+                cur = CURRENT_STATE.REGS[Rn] - cur;
+      	  break;
+        case 3: cur = CURRENT_STATE.REGS[Rn] -
+  	      ((CURRENT_STATE.REGS[Rm] >> shamt5) |
+                 (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
+  	  break;
+        }
+      else
+        switch (sh) {
+        case 0: cur = CURRENT_STATE.REGS[Rn] -
+  	  (CURRENT_STATE.REGS[Rm] << CURRENT_STATE.REGS[Rs]);
+  	  break;
+        case 1: cur = CURRENT_STATE.REGS[Rn] -
+  	  (CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]);
+  	  break;
+        case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+                  cur = CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs];
+                else{
+                  for(int i = 0; i < CURRENT_STATE.REGS[Rs]; i++)
+                        cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                }
+                cur = CURRENT_STATE.REGS[Rn] - cur;
+  	  break;
+        case 3: cur = CURRENT_STATE.REGS[Rn] -
+  	      ((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
+                 (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs])));
+  	  break;
+        }
+    }
+    if (I == 1) {
+      int rotate = Operand2 >> 8;
+      int Imm = Operand2 & 0x000000FF;
+      cur = CURRENT_STATE.REGS[Rn] - (Imm>>2*rotate|(Imm<<(32-2*rotate)));
+    }
+  
+    if (S == 1) {
+      if (cur < 0)
+        NEXT_STATE.CPSR |= N_N;
+      if (cur == 0)
+        NEXT_STATE.CPSR |= Z_N;
+      if(cur > 0xFFFFFFFF){
+        NEXT_STATE.CPSR |= V_N;
+        NEXT_STATE.CPSR |= C_N;
+      }
+    }
+    return 0;
 }
 
 int CMP (int Rd, int Rn, int Operand2, int I, int S, int CC){
@@ -643,23 +677,17 @@ int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
     }
       return 0;
 } //DONE
-
 int LDR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 
 
 
 }
-
-
 int LDRB (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 
 
 }
-
-
-
 int LSL (int Rd, int Rn, int Operand2, int I, int S){
 
     int cur = 0;
@@ -734,15 +762,9 @@ int LSL (int Rd, int Rn, int Operand2, int I, int S){
 
 
 } //DONE
-
-
 int LSR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
-
-
 }
-
-
 int MOV (int Rd, int Operand2, int I, int S){
   if(I == 1 || ((Operand2 & 0x00000ff0) >> 4) == 0x00) {
     CURRENT_STATE.REGS[Rd] = Operand2;
@@ -863,8 +885,6 @@ int ORR (int Rd, int Rn, int Operand2, int I, int S, int CC){
     }
     return 0;
 } //DONE
-
-
 int ROR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 
@@ -964,8 +984,6 @@ int STR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 
 }
-
-
 int STRB (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 
@@ -1042,8 +1060,6 @@ int SUB (int Rd, int Rn, int Operand2, int I, int S, int CC) {
   }
   return 0;
 } //DONE
-
-
 int TEQ (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 
