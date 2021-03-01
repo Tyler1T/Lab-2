@@ -892,8 +892,6 @@ int SBC (int Rd, int Rn, int Operand2, int I, int S, int CC){
     return 0;
 
 }
-
-
 int STR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 
@@ -906,9 +904,6 @@ int STRB (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 
 }
-
-
-
 int SUB (int Rd, int Rn, int Operand2, int I, int S, int CC) {
 
   int cur = 0;
@@ -932,6 +927,7 @@ int SUB (int Rd, int Rn, int Operand2, int I, int S, int CC) {
                 for(int i = 0; i < shamt5; i++)
                       cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
               }
+              cur = CURRENT_STATE.REGS[Rn] - cur;
     	  break;
       case 3: cur = CURRENT_STATE.REGS[Rn] -
 	      ((CURRENT_STATE.REGS[Rm] >> shamt5) |
@@ -952,6 +948,7 @@ int SUB (int Rd, int Rn, int Operand2, int I, int S, int CC) {
                 for(int i = 0; i < CURRENT_STATE.REGS[Rs]; i++)
                       cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
               }
+              cur = CURRENT_STATE.REGS[Rn] - cur;
 	  break;
       case 3: cur = CURRENT_STATE.REGS[Rn] -
 	      ((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
@@ -1019,7 +1016,9 @@ int TST (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 }
 
-int B (char* i_);
+int B (int imm24){
+  CURRENT_STATE.REGS[15] = (CURRENT_STATE.REGS[15] + 8) + imm24 << 2;
+}
 int BL (char* i_);
 
 int MLA (char* i_);
