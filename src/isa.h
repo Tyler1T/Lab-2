@@ -90,6 +90,7 @@ int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
                   for(int i = 0; i < shamt5; i++)
                         cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
                 }
+                cur = CURRENT_STATE.REGS[Rn] + cur;
     	  break;
         case 3: cur = CURRENT_STATE.REGS[Rn] +
 	       ((CURRENT_STATE.REGS[Rm] >> shamt5) |
@@ -110,6 +111,7 @@ int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
                     for(int i = 0; i < CURRENT_STATE.REGS[Rs]; i++)
                           cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
                   }
+                  cur = CURRENT_STATE.REGS[Rn] + cur;
   	      break;
           case 3: cur = CURRENT_STATE.REGS[Rn] +
   	       ((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
@@ -145,7 +147,7 @@ int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
   }
   return 0;
 
-}
+} //DONE
 int ADC (int Rd, int Rn, int Operand2, int I, int S, int CC) {
 
   int cur = 0;
@@ -239,7 +241,7 @@ int ADC (int Rd, int Rn, int Operand2, int I, int S, int CC) {
   }
   return 0;
 
-}
+} //DONE
 int AND (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
     int cur = 0;
@@ -329,7 +331,7 @@ int AND (int Rd, int Rn, int Operand2, int I, int S, int CC){
         NEXT_STATE.CPSR |= C_N;
   }
   return 0;
-}
+} //DONE
 
 int ASR (char* i_){
   //Pseudo Code
@@ -371,14 +373,81 @@ return 0;
 
 }
 
-int BIC (int Rd, int Rn, int Operand2, int I, int S, int CC){
+int BIC (int Rd, int Rn, int Operand2, int S){
 
+    int cur = 0;
 
+    //If I = 0 then the processor has to go get Operand2 from memory
+    if(I == 0) {
+      /*
+        These integers apply a mask to different parts of the operand in order to
+        look at specific values
+      */
+      int sh = (Operand2 & 0x00000060) >> 5;
+      int shamt5 = (Operand2 & 0x00000F80) >> 7;
+      int bit4 = (Operand2 & 0x00000010) >> 4;
+      int Rm = Operand2 & 0x0000000F;
+      int Rs = (Operand2 & 0x00000F00) >> 8;
 
+      /*This IF checks bit 4 is 1 or 0
+          1 means that this is a Register
+          0 means that this is a Register-shifted Register
+      */
+      if (bit4 == 0)
+        //switch determines how Rm will be shifted
+        switch (sh) {
+          case 0: cur = CURRENT_STATE.REGS[Rn] &
+           ~(CURRENT_STATE.REGS[Rm] << shamt5);
+          break;
+          case 1: cur = CURRENT_STATE.REGS[Rn] &
+           (CURRENT_STATE.REGS[Rm] >> shamt5);
+          break;
+          case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+                    cur = CURRENT_STATE.REGS[Rm] >> shamt5;
+                  else{
+                    for(int i = 0; i < shamt5; i++)
+                          cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                  }
+                  cur = CURRENT_STATE.REGS[Rn] & ~cur;
+          break;
+          case 3: cur = CURRENT_STATE.REGS[Rn] &
+                  ~((CURRENT_STATE.REGS[Rm] >> shamt5) |
+                 (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
+          break;
+        }else
+          //switch determines how Rm will be shifted
+          switch (sh) {
+            case 0: cur = CURRENT_STATE.REGS[Rn] &
+             ~(CURRENT_STATE.REGS[Rm] << CURRENT_STATE.REGS[Rs]);
+            break;
+            case 1: cur = CURRENT_STATE.REGS[Rn] &
+             ~(CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]);
+            break;
+            case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+                      cur = CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs];
+                    else{
+                      for(int i = 0; i < CURRENT_STATE.REGS[Rs]; i++)
+                            cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                    }
+                    cur = CURRENT_STATE.REGS[Rn] & ~cur;
+            break;
+            case 3: cur = CURRENT_STATE.REGS[Rn] &
+             ~((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
+                   (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs])));
+            break;
+          }
+    }
 
-
-
-
+    /*
+      If I = 1 then the number being added is there in the command and there
+      is no reason to go to memory again
+    */
+    if (I == 1) {
+      int rotate = Operand2 >> 8;
+      int Imm = Operand2 & 0x000000FF;
+      cur = CURRENT_STATE.REGS[Rn] & ~(Imm>>2*rotate|(Imm<<(32-2*rotate)));
+    }
+    NEXT_STATE.REGS[Rd] = cur;
 
   /*
     If S = 1 then set the condition flags
@@ -392,9 +461,7 @@ int BIC (int Rd, int Rn, int Operand2, int I, int S, int CC){
       NEXT_STATE.CPSR |= C_N;
   }
   return 0;
-
-
-}
+} //DONE
 
 int CMN (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
@@ -575,7 +642,7 @@ int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
           NEXT_STATE.CPSR |= C_N;
     }
       return 0;
-}
+} //DONE
 
 int LDR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
@@ -666,7 +733,7 @@ int LSL (int Rd, int Rn, int Operand2, int I, int S){
   return 0;
 
 
-}
+} //DONE
 
 
 int LSR (int Rd, int Rn, int Operand2, int I, int S, int CC){
@@ -689,7 +756,7 @@ int MOV (int Rd, int Operand2, int I, int S){
       NEXT_STATE.CPSR |= C_N;
   }
   return 0;
-}
+} //DONE
 int MVN (int Rd, int Rn, int S){
   // Move the NOT of Rn into Rd
   int cur = NEXT_STATE.REGS[Rd] = ~CURRENT_STATE.REGS[Rn];
@@ -708,7 +775,7 @@ int MVN (int Rd, int Rn, int S){
     }
   }
   return 0;
-}
+} // DONE
 int ORR (int Rd, int Rn, int Operand2, int I, int S, int CC){
     int cur = 0;
 
@@ -795,7 +862,7 @@ int ORR (int Rd, int Rn, int Operand2, int I, int S, int CC){
         NEXT_STATE.CPSR |= C_N;
     }
     return 0;
-}
+} //DONE
 
 
 int ROR (int Rd, int Rn, int Operand2, int I, int S, int CC){
@@ -891,7 +958,7 @@ int SBC (int Rd, int Rn, int Operand2, int I, int S, int CC){
     }
     return 0;
 
-}
+} //DONE
 int STR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 
@@ -974,7 +1041,7 @@ int SUB (int Rd, int Rn, int Operand2, int I, int S, int CC) {
     }
   }
   return 0;
-}
+} //DONE
 
 
 int TEQ (int Rd, int Rn, int Operand2, int I, int S, int CC){
@@ -1018,12 +1085,11 @@ int TST (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 int B (int imm24){
   CURRENT_STATE.REGS[15] = (CURRENT_STATE.REGS[15] + 8) + imm24 << 2;
-}
+} // DONE
 int BL (int imm24){
   CURRENT_STATE.REGS[14] = (CURRENT_STATE.REGS[15] + 8) - 4;
   CURRENT_STATE.REGS[15] = (CURRENT_STATE.REGS[15] + 8) + imm24 << 2;
-}
-
+} //DONE
 int MLA (char* i_);
 int MUL (char* i_);
 
