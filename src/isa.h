@@ -1101,13 +1101,40 @@ int LDR (int Rd, int Rn, int Operand2, int I){
     }else{
         Operand2 = CURRENT_STATE.REGS[Rd];
     }
-
-      return 0;
-
-
+    return 0;
 }
 int STRB (int Rd, int Rn, int Operand2, int I){
+  int sh = (Operand2 & 0x00000060) >> 5;
+  int shamt5 = (Operand2 & 0x00000F80) >> 7;
+  int bit4 = (Operand2 & 0x00000010) >> 4;
+  int Rm = Operand2 & 0x0000000F;
+  int Rs = (Operand2 & 0x00000F00) >> 8;
 
+  if (I == 0){
+      //switch determines how Rm will be shifted
+      switch (sh) {
+        case 0: CURRENT_STATE.REGS[Rm] << CURRENT_STATE.REGS[Rs] = CURRENT_STATE.REGS[Rd] >> 8;
+        break;
+        case 1: CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs] = CURRENT_STATE.REGS[Rd] >> 8;
+        break;
+        case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+                  CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs] = CURRENT_STATE.REGS[Rd];
+                else{
+                  int cur = 0;
+                  for(int i = 0; i < CURRENT_STATE.REGS[Rs]; i++)
+                        cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
+                  CURRENT_STATE.REGS[Rd] = cur;
+
+                }
+        break;
+        case 3: ((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
+               (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs]))) = CURRENT_STATE.REGS[Rd];
+        break;
+      }
+    }else{
+        Operand2 = CURRENT_STATE.REGS[Rd];
+    }
+    return 0;
 
 
 }
