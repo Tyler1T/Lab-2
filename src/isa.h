@@ -403,7 +403,6 @@ int ASR (char* i_){
 
 
 }
-
 int BIC (int Rd, int Rn, int Operand2, int S){
 
     int cur = 0;
@@ -1180,8 +1179,6 @@ int ROR (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
 
 }
-
-
 int SBC (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
     int cur = 0;
