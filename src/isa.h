@@ -55,6 +55,10 @@
 
 */
 
+int main(int argc, char const *argv[]) {
+  /* code */
+  return 0;
+}
 int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
 
   int cur = 0;
@@ -96,7 +100,8 @@ int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
 	       ((CURRENT_STATE.REGS[Rm] >> shamt5) |
                (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
 	      break;
-      }else
+      }
+    }else{
         //switch determines how Rm will be shifted
         switch (sh) {
           case 0: cur = CURRENT_STATE.REGS[Rn] +
@@ -118,7 +123,9 @@ int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
                  (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs])));
   	      break;
         }
-  }
+      }
+    }
+
 
   /*
     If I = 1 then the number being added is there in the command and there
@@ -146,7 +153,7 @@ int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
     }
   }
   return 0;
-}} //DONE
+} //DONE
 int ADC (int Rd, int Rn, int Operand2, int I, int S, int CC) {
 
   int cur = 0;
@@ -173,7 +180,7 @@ int ADC (int Rd, int Rn, int Operand2, int I, int S, int CC) {
         case 0: cur = CURRENT_STATE.REGS[Rn] +
   	     (CURRENT_STATE.REGS[Rm] << shamt5) + C_CUR;
   	    break;
-        case 1: cur = c
+        case 1: cur =  CURRENT_STATE.REGS[Rn] +
   	     (CURRENT_STATE.REGS[Rm] >> shamt5) + C_CUR;
   	    break;
         case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
@@ -270,7 +277,7 @@ int AND (int Rd, int Rn, int Operand2, int I, int S, int CC){
           case 1: cur = CURRENT_STATE.REGS[Rn] &
     	     (CURRENT_STATE.REGS[Rm] >> shamt5);
     	    break;
-          case 2: cur = if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+          case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
                     cur = (CURRENT_STATE.REGS[Rm] >> shamt5) & CURRENT_STATE.REGS[Rn];
                   else{
                     for(int i = 0; i < shamt5; i++)
@@ -296,7 +303,7 @@ int AND (int Rd, int Rn, int Operand2, int I, int S, int CC){
                     else{
                       for(int i = 0; i < CURRENT_STATE.REGS[Rs]; i++)
                         cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
-                      cur = cur & CURRENT_STATE.REGS[Rn]
+                      cur = cur & CURRENT_STATE.REGS[Rn];
                     }
     	      break;
             case 3: cur = CURRENT_STATE.REGS[Rn] &
@@ -304,7 +311,6 @@ int AND (int Rd, int Rn, int Operand2, int I, int S, int CC){
                    (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs])));
     	      break;
           }
-    }
 
     /*
       If I = 1 then the number being added is there in the command and there
@@ -696,7 +702,7 @@ int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
                       for(int i = 0; i < shamt5; i++)
                         cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
                     }
-                    nand = !(CURRENT_STATE.REGS[Rn] & cur;
+                    nand = !(CURRENT_STATE.REGS[Rn]) & cur;
                     or = CURRENT_STATE.REGS[Rn] | cur;
                     cur = nand & or;
         	  break;
@@ -704,9 +710,9 @@ int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
     	       ((CURRENT_STATE.REGS[Rm] >> shamt5) |
                    (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
                    nand = !(CURRENT_STATE.REGS[Rn] & ((CURRENT_STATE.REGS[Rm] >> shamt5) |
-                         (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
+                         (CURRENT_STATE.REGS[Rm] << (32 - shamt5))));
                    or = CURRENT_STATE.REGS[Rn] | ((CURRENT_STATE.REGS[Rm] >> shamt5) |
-                         (CURRENT_STATE.REGS[Rm] << (32 - shamt5));
+                         (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
                    cur = nand & or;
     	      break;
           }else
@@ -731,7 +737,7 @@ int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
                         for(int i = 0; i < CURRENT_STATE.REGS[Rs]; i++)
                           cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
                       }
-                      nand = !(CURRENT_STATE.REGS[Rn] & cur;
+                      nand = !(CURRENT_STATE.REGS[Rn] & cur);
                       or = CURRENT_STATE.REGS[Rn] | cur;
                       cur = nand & or;
           	  break;
@@ -1506,7 +1512,7 @@ int TST (int Rd, int Rn, int Operand2, int I, int S, int CC){
             case 1: cur = CURRENT_STATE.REGS[Rn] &
       	     (CURRENT_STATE.REGS[Rm] >> shamt5);
       	    break;
-            case 2: cur = if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
+            case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
                       cur = (CURRENT_STATE.REGS[Rm] >> shamt5) & CURRENT_STATE.REGS[Rn];
                     else{
                       for(int i = 0; i < shamt5; i++)
@@ -1532,7 +1538,7 @@ int TST (int Rd, int Rn, int Operand2, int I, int S, int CC){
                       else{
                         for(int i = 0; i < CURRENT_STATE.REGS[Rs]; i++)
                           cur = (CURRENT_STATE.REGS[Rm] >> 1) + 0x80000000;
-                        cur = cur & CURRENT_STATE.REGS[Rn]
+                        cur = cur & CURRENT_STATE.REGS[Rn];
                       }
       	      break;
               case 3: cur = CURRENT_STATE.REGS[Rn] &
