@@ -169,7 +169,7 @@ int data_process(char* i_) {
 
 
   //Logical Left Shift LSL
-  if(!strcmp(d_opcode, "1101") {
+  if(!strcmp(d_opcode, "1101")) {
     printf("--- This is an LSL instruction. \n");
     LSL(Rd, Rn, Operand2, I, S, CC);
     return 0;
@@ -355,7 +355,7 @@ int transfer_process(char* i_) {
 
   char rn[5]; rn[4] = '\0';
   char rd[5]; rd[4] = '\0';
-  char func[7]; func[6] = '\0';
+  char funct[7]; funct[6] = '\0';
   char operand2[13]; operand2[12] = '\0';
 
   //setting rn, rd, func, and operand2 arrays
@@ -371,7 +371,7 @@ int transfer_process(char* i_) {
   }
 
   int CC = bchar_to_int(d_cond);
-  int func = bchar_to_int(func);
+  int func = bchar_to_int(funct);
   int Rn = bchar_to_int(rn);
   int Rd = bchar_to_int(rd);
   int Operand2 = bchar_to_int(operand2);
@@ -387,21 +387,21 @@ int transfer_process(char* i_) {
   //Store Register STR
   if((i_[9] == '0') && (i_[11] == '0')) {
     printf("--- This is an STR instruction. \n");
-    STR(Rd, Rn, Operand2, func[0]);
+    STR(Rd, Rn, Operand2, funct[0]);
     return 0;
   }
 
   //Load Register LDR
   if((i_[9] == '0') && (i_[11] == '1')) {
     printf("--- This is an LDR instruction. \n");
-    LDR(Rd, Rn, Operand2, func[0]);
+    LDR(Rd, Rn, Operand2, funct[0]);
     return 0;
   }
 
   //Store Byte STRB
   if((i_[9] == '1') && (i_[11] == '0')) {
     printf("--- This is an STRB instruction. \n");
-    STRB(Rd, Rn, Operand2, func[0]);
+    STRB(Rd, Rn, Operand2, funct[0]);
     return 0;
   }
 
@@ -409,7 +409,7 @@ int transfer_process(char* i_) {
   // Load Byte LDRB
   if((i_[9] == '1') && (i_[11] == '1')) {
     printf("--- This is an LDRB instruction. \n");
-    LDRB(Rd, Rn, Operand2, func[0]);
+    LDRB(Rd, Rn, Operand2, funct[0]);
 
     return 0;
   }
