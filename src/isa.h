@@ -55,10 +55,6 @@
 
 */
 
-int main(int argc, char const *argv[]) {
-  /* code */
-  return 0;
-}
 int ADD (int Rd, int Rn, int Operand2, int I, int S, int CC) {
 
   int cur = 0;
