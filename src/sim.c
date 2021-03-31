@@ -141,16 +141,7 @@ int data_process(char* i_) {
     printf("--- This is an SUB instruction. \n");
     SUB(Rd, Rn, Operand2, I, S, CC);
     return 0;
-  }
-
-
-  //Reverse subtraction command RSB
-  if(!strcmp(d_opcode,"0011")) {
-    printf("--- This is an RSB instruction. \n");
-    RSB(Rd, Rn, Operand2, I, S, CC);
-    return 0;
-  }
-
+}
 
   //Binary or command ORR
   if(!strcmp(d_opcode,"1100")) {
@@ -220,7 +211,7 @@ int data_process(char* i_) {
   //Arithmetic Shift Right ASR
   if(!strcmp(d_opcode, "1101")) {
     printf("--- This is an ASR instruction. \n");
-    ASR(Rd, Rn, Operand2, I, S, CC);
+    ASR(Rd, Rn, Operand2, I, S);
     return 0;
   }
 
@@ -236,14 +227,14 @@ int data_process(char* i_) {
   //Bitwise NOT MVN
   if(!strcmp(d_opcode, "1111")) {
     printf("--- This is an MVN instruction. \n");
-    MVN(Rd, Rn, Operand2, I, S, CC);
+    MVN(Rd, Rn, S);
     return 0;
   }
 
   //Test Equivalence TEQ
   if(!strcmp(d_opcode, "1001")) {
     printf("--- This is an TEQ instruction. \n");
-    TEQ(Rd, Rn, Operand2 I, S, CC);
+    TEQ(Rd, Rn, Operand2, I, S, CC);
     return 0;
   }
 
@@ -251,7 +242,7 @@ int data_process(char* i_) {
   //Bitwise Clear BIC
   if(!strcmp(d_opcode, "1110")) {
     printf("--- This is a BIC instruction. \n");
-    MVN(Rd, Rn, Operand2, I, S, CC);
+    BIC(Rd, Rn, Operand2, S);
     return 0;
   }
 
@@ -303,7 +294,7 @@ int branch_process(char* i_) {
     //Branch with Link BL
     if((i_[7] == '0')) {
       printf("--- This is an B instruction. \n");
-      B();
+      B(imm24);
 
       return 0;
     }
@@ -311,7 +302,7 @@ int branch_process(char* i_) {
     //Branch B
     if((i_[7] == '1')) {
       printf("--- This is an BL instruction. \n");
-      BL();
+      BL(imm24);
 
       return 0;
     }
@@ -360,7 +351,7 @@ int transfer_process(char* i_) {
 
   //setting rn, rd, func, and operand2 arrays
   for(int i = 0; i < 6; i++) {
-    func[i] = i_[6+i];
+    funct[i] = i_[6+i];
   }
   for(int i = 0; i < 4; i++) {
     rn[i] = i_[12+i];

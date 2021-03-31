@@ -244,6 +244,8 @@ int ADC (int Rd, int Rn, int Operand2, int I, int S, int CC) {
   return 0;
 
 } //DONE
+
+
 int AND (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
     int cur = 0;
@@ -330,9 +332,10 @@ int AND (int Rd, int Rn, int Operand2, int I, int S, int CC){
         NEXT_STATE.CPSR |= Z_N;
       if(cur > 0xffffffff)
         NEXT_STATE.CPSR |= C_N;
-  }
-  return 0;} //DONE
-int ASR (char* i_){
+    }
+  return 0;
+} //DONE
+int ASR (int Rd, int Rn, int Operand2, int I, int S){
   int cur = 0;
 
   //If I = 0 then the processor has to go get Operand2 from memory
@@ -446,7 +449,7 @@ int BIC (int Rd, int Rn, int Operand2, int S){
                   ~((CURRENT_STATE.REGS[Rm] >> shamt5) |
                  (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
           break;
-        }else
+      }else{
           //switch determines how Rm will be shifted
           switch (sh) {
             case 0: cur = CURRENT_STATE.REGS[Rn] &
@@ -469,7 +472,7 @@ int BIC (int Rd, int Rn, int Operand2, int S){
             break;
           }
     }
-
+}
     /*
       If I = 1 then the number being added is there in the command and there
       is no reason to go to memory again
@@ -484,8 +487,8 @@ int BIC (int Rd, int Rn, int Operand2, int S){
   /*
     If S = 1 then set the condition flags
   */
-  if (S == 1) {
-    if (cur < 0)
+  if(S == 1){
+    if(cur < 0)
       NEXT_STATE.CPSR |= N_N;
     if (cur == 0)
       NEXT_STATE.CPSR |= Z_N;
@@ -676,7 +679,7 @@ int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
             1 means that this is a Register
             0 means that this is a Register-shifted Register
         */
-        if (bit4 == 0)
+        if (bit4 == 0){
           //switch determines how Rm will be shifted
           switch (sh) {
             case 0: nand = !(CURRENT_STATE.REGS[Rn] &
@@ -711,7 +714,8 @@ int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
                          (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
                    cur = nand & or;
     	      break;
-          }else
+            }
+          }else{
             //switch determines how Rm will be shifted
             switch (sh) {
               case 0: nand = !(CURRENT_STATE.REGS[Rn] &
@@ -740,10 +744,9 @@ int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
               case 3: cur = CURRENT_STATE.REGS[Rn] &
       	       ((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
                      (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs])));
-                     nand = !(CURRENT_STATE.REGS[Rn] & ((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
+                     nand = !(CURRENT_STATE.REGS[Rn] & (CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
                            (CURRENT_STATE.REGS[Rm] << (32 - shamt5)));
-                     or = CURRENT_STATE.REGS[Rn] | ((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
-                           (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs]));
+                     or = CURRENT_STATE.REGS[Rn] | ((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |  (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs])));
                      cur = nand & or;
       	      break;
             }
@@ -774,7 +777,9 @@ int EOR (int Rd, int Rn, int Operand2, int I, int S, int CC){
         if(cur > 0xffffffff)
           NEXT_STATE.CPSR |= C_N;
     }
-      return 0;
+
+  return 0;
+
 } //DONE
 int STR (int Rd, int Rn, int Operand2, int I){
   int sh = (Operand2 & 0x00000060) >> 5;
@@ -845,7 +850,7 @@ int LDRB (int Rd, int Rn, int Operand2, int I){
 
 
 } //DONE
-int LSL (int Rd, int Rn, int Operand2, int I, int S){
+int LSL (int Rd, int Rn, int Operand2, int I, int S, int CC){
 
     int cur = 0;
 
@@ -917,7 +922,7 @@ int LSL (int Rd, int Rn, int Operand2, int I, int S){
   }
   return 0;
 } //DONE
-int LSR (int Rd, int Rn, int Operand2, int I, int S){
+int LSR (int Rd, int Rn, int Operand2, int I, int S, int CC){
   int cur = 0;
 
   //If I = 0 then the processor has to go get Operand2 from memory
@@ -1298,12 +1303,12 @@ int STRB (int Rd, int Rn, int Operand2, int I){
   if (I == 0){
       //switch determines how Rm will be shifted
       switch (sh) {
-        case 0: CURRENT_STATE.REGS[Rm] << CURRENT_STATE.REGS[Rs] = CURRENT_STATE.REGS[Rd] >> 8;
+        case 0: CURRENT_STATE.REGS[Rm << CURRENT_STATE.REGS[Rs]] = CURRENT_STATE.REGS[Rd] >> 8;
         break;
-        case 1: CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs] = CURRENT_STATE.REGS[Rd] >> 8;
+        case 1: CURRENT_STATE.REGS[Rm >> CURRENT_STATE.REGS[Rs]] = CURRENT_STATE.REGS[Rd] >> 8;
         break;
         case 2: if(CURRENT_STATE.REGS[Rm] & 0x80000000 == 0)
-                  CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs] = CURRENT_STATE.REGS[Rd] >> 8;
+                  CURRENT_STATE.REGS[Rm >> CURRENT_STATE.REGS[Rs]] = CURRENT_STATE.REGS[Rd] >> 8;
                 else{
                   int cur = 0;
                   for(int i = 0; i < CURRENT_STATE.REGS[Rs]; i++)
@@ -1312,8 +1317,9 @@ int STRB (int Rd, int Rn, int Operand2, int I){
 
                 }
         break;
-        case 3: ((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
-               (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs]))) = CURRENT_STATE.REGS[Rd] >> 8;
+        case 3: CURRENT_STATE.REGS[Rd] =
+         ((CURRENT_STATE.REGS[Rm] >> CURRENT_STATE.REGS[Rs]) |
+               (CURRENT_STATE.REGS[Rm] << (32 - CURRENT_STATE.REGS[Rs])));
         break;
       }
     }else{
